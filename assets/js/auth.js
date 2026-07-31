@@ -19,7 +19,7 @@
     document.body.classList.add('gate-active');
     const main = $('mainView');
     if(main) main.classList.add('hidden');
-    showAuthView('welcome');
+    showAuthView();
   }
 
   function enterApp(){
@@ -28,17 +28,11 @@
     if(main) main.classList.remove('hidden');
   }
 
-  function showAuthView(view){
-    const welcome = $('viewWelcome');
-    const login = $('viewLogin');
-    if(!welcome || !login) return;
-    const showLogin = view === 'login';
-    welcome.classList.toggle('visible', !showLogin);
-    login.classList.toggle('visible', showLogin);
+  function showAuthView(){
     clearAuthMsg();
     const flow = $('authFlow');
     if(flow) flow.scrollTop = 0;
-    if(showLogin) setTimeout(()=>($('alLoginId') || {}).focus?.(), 80);
+    setTimeout(()=>($('alLoginId') || {}).focus?.(), 80);
   }
 
   function showAuthMsg(type, text){
@@ -150,13 +144,13 @@
 
       afSaveSession(data.student, token, data.device_id || afGetDeviceId());
       if(window.AFPush) window.AFPush.init(data.student.student_id || data.student.id, data.student.batch || 'All');
-      showAuthMsg('ok', 'Login successful. Starting AF Nexus...');
+      showAuthMsg('ok', 'Login successful. Starting JB Knowledge Park...');
       enterApp();
       if(typeof window.init === 'function') setTimeout(()=>window.init(), 120);
     }catch(e){
       showAuthMsg('err', (e && e.message) || 'Something went wrong. Please try again.');
     }finally{
-      if(btn){ btn.disabled = false; btn.innerHTML = '<span>Log in</span>'; }
+      if(btn){ btn.disabled = false; btn.innerHTML = '<span>Sign In to Community</span>'; }
     }
   }
 
