@@ -32,6 +32,8 @@
     }
 
     if(target === 'search'){
+      if(document.getElementById('myProfileScreen')?.style.display === 'flex') window.nxCloseMyProfile?.();
+      if(document.getElementById('profileScreen')?.style.display === 'flex') window.nxCloseProfile?.();
       window.nxOpenSearchScreen?.();
       setNavActive('search');
       return;
@@ -44,6 +46,8 @@
     }
 
     if(target === 'profile'){
+      closeOverlay('searchScreen', window.nxCloseSearchScreen);
+      if(document.getElementById('profileScreen')?.style.display === 'flex') window.nxCloseProfile?.();
       window.nxOpenMyProfile?.();
       setNavActive('profile');
     }
@@ -51,6 +55,22 @@
 
   document.addEventListener('DOMContentLoaded', ()=>{
     setNavActive('feed');
+    document.getElementById('pillRelevant')?.addEventListener('click', e=>{
+      e.preventDefault();
+      window.nxSetMode?.('relevant');
+    });
+    document.getElementById('pillRecent')?.addEventListener('click', e=>{
+      e.preventDefault();
+      window.nxSetMode?.('recent');
+    });
+    document.getElementById('tabFeed')?.addEventListener('click', e=>{
+      e.preventDefault();
+      window.nxSwitchTab?.('feed');
+    });
+    document.getElementById('tabChats')?.addEventListener('click', e=>{
+      e.preventDefault();
+      window.nxSwitchTab?.('chats');
+    });
     const modalIds = ['composerModal', 'searchScreen', 'myProfileScreen'];
     modalIds.forEach(id=>{
       const el = document.getElementById(id);
