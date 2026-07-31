@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="theme-color" content="#4f46e5"/>
 <meta name="mobile-web-app-capable" content="yes"/>
-<title>AF Nexus · Community</title>
+<title>JB · Community</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link rel="icon" type="image/jpeg" href="/IMG/AF%20LOGO%202.jpeg">
@@ -23,7 +23,7 @@
         <div class="auth-brand-row">
           <div class="auth-logo">
             <img src="/IMG/AF%20LOGO%202.jpeg" alt="AF" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/>
-            <span style="display:none">AF</span>
+            <span style="display:none">JB</span>
           </div>
           <span class="auth-pill">Community</span>
         </div>
@@ -45,10 +45,10 @@
         <div class="auth-login-head">
           <div class="auth-logo auth-logo-large">
             <img src="/IMG/AF%20LOGO%202.jpeg" alt="AcademeForge" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/>
-            <span style="display:none">AF</span>
+            <span style="display:none">JB</span>
           </div>
           <h2>Welcome Back</h2>
-          <p>Use your AcademeForge student account to continue.</p>
+          <p>Use your AcademeForge account to continue.</p>
         </div>
         <form class="auth-card" onsubmit="event.preventDefault();doAcademeLogin();">
           <label class="auth-field">
@@ -85,7 +85,7 @@
   <div class="af-view active" id="mainView">
     <header class="af-topbar" id="hdr">
       <div class="af-topbar-flex">
-        <div class="af-topbar-headline">AF Nexus</div>
+        <div class="af-topbar-headline">JB Knowledge Park</div>
       </div>
     </header>
 
@@ -186,8 +186,7 @@
   <!-- MY PROFILE SCREEN -->
   <div class="my-profile-screen" id="myProfileScreen">
     <div class="af-topbar">
-      <button class="af-back" onclick="nxCloseMyProfile()">←</button>
-      <div class="af-topbar-title">My Profile</div>
+      <div class="af-topbar-title">Profile</div>
       <button class="af-hdr-icon-btn" onclick="nxOpenMainMenu()" aria-label="Settings" style="margin-left:auto;font-size:18px;">⋮</button>
     </div>
     <div class="af-page" id="myProfilePageScroll" style="padding:0;">
@@ -220,7 +219,6 @@
   <!-- FULL SCREEN SEARCH -->
   <div class="full-screen-view" id="searchScreen">
     <div class="af-topbar">
-       <button class="af-back" onclick="nxCloseSearchScreen()">←</button>
        <div style="flex:1;background:var(--inp);border-radius:11px;display:flex;align-items:center;padding:0 12px;height:38px;border:1.5px solid var(--b1);">
           <span style="font-size:14px;color:var(--tm);margin-right:8px;">🔍</span>
           <input type="text" id="fullSearchInp" placeholder="Search for users…" oninput="nxFullSearchTyping()" autocomplete="off" style="flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-family:var(--fb);font-size:14px;font-weight:500;"/>
