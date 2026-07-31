@@ -5,6 +5,8 @@ async function nxSwitchTab(tab){
   if(_activeTab==='feed' && $('feed')) _cache.feedScrollTop = $('feed').scrollTop;
 
   _activeTab = tab;
+  if($('mainHeaderTitle')) $('mainHeaderTitle').textContent = tab==='chats' ? 'Chats' : 'JB Knowledge Park';
+  if($('feedNotifyBtn')) $('feedNotifyBtn').classList.toggle('hidden', tab==='chats');
   if($('tabFeed')) $('tabFeed').classList.toggle('active', tab==='feed');
   if($('tabChats')) $('tabChats').classList.toggle('active', tab==='chats');
   if(window.nxSetNavActive) window.nxSetNavActive(tab);
@@ -45,14 +47,19 @@ async function init(){
 
   show('mainView');
   _cache.chatReadTs = loadChatReadTs();
-  _cache.likedPostIds = loadLikedPostIds();
+  _cache.likedPostIds = new Set();
   nxRequestNotifyPermission();
   nxLoadMyProfile();
-  await Promise.all([nxLoadPosts(), nxPreloadConnections(), nxLoadBlockedUsers()]);
-  nxLoadStories();
-  setupRealtime();
+  Promise.allSettled([
+    nxLoadPosts(),
+    nxPreloadConnections(),
+    nxLoadBlockedUsers(),
+    nxLoadStories()
+  ]).then(()=>{
+    syncMyStoryAvatar();
+  });
+  loadSupabaseSDK().then(()=>setupRealtime()).catch(()=>{});
   startPresencePing();
-  syncMyStoryAvatar();
   nxStartChatListPoll();
 }
 
@@ -64,7 +71,13 @@ async function nxPreloadConnections(){
   // round-trip resolves, then quietly refresh in the background.
   const cachedFollowers=loadSnapshot('followers_me');
   const cachedFollowing=loadSnapshot('following_me');
-  if(Array.isArray(cachedFollowers)) _cache.myFollowers=cachedFollowers;
+  if(Array.isArray(cachedFollowers)){
+    _cache.myFollowers=cachedFollowers;
+    cachedFollowers.forEach(u=>{
+      const key=String(u.student_key||u.key||'');
+      if(key) _cache.notifiedFollowerKeys.add(key);
+    });
+  }
   if(Array.isArray(cachedFollowing)){
     _cache.myFollowing=cachedFollowing;
     _cache.followingKeys=new Set(_cache.myFollowing.map(u=>String(u.student_key||'')));
@@ -88,6 +101,7 @@ async function nxPreloadConnections(){
   if(folRes&&folRes.ok){
     _cache.myFollowers = folRes.users||[];
     saveSnapshot('followers_me', _cache.myFollowers);
+    nxScanFollowerNotifications(_cache.myFollowers);
   }
   if(figRes&&figRes.ok){
     _cache.myFollowing = figRes.users||[];
@@ -100,9 +114,12 @@ async function nxPreloadConnections(){
 
 async function nxLoadChatsFromConnections(){
   const res=await edgeCall({action:'get_chat_list'});
-  if(!res||!res.ok) return;
-  _cache.chatList=res.chats||[];
   _chatsLoaded=true;
+  if(!res||!res.ok){
+    nxRenderChatList();
+    return;
+  }
+  _cache.chatList=res.chats||[];
   nxRenderChatList();
   // Persist so the NEXT app open can paint this chat list instantly
   // from cache before the network round-trip resolves (same pattern
@@ -268,6 +285,7 @@ async function nxRefreshPeerChat(peerKey){
             ? '↩ Replied to your story'
             : (cleanPreview.length>40 ? cleanPreview.slice(0,40)+'…' : cleanPreview) || '📷 Image';
           showToast(`💬 ${name}: ${displayText}`,'info');
+          nxAddMessageNotification(peerObj||{student_key:peerKey,student_name:name}, displayText);
           // Push notification when tab is hidden or unfocused
           nxPushNotify(name, displayText, peerObj?.avatar_url||'');
           } // end if(_activeTab !== 'chats')
@@ -397,16 +415,15 @@ async function nxLoadPosts(isRefresh=false){
 
   const freshPosts=Array.isArray(res.posts)?res.posts:[];
 
-  // Sync liked state from server when it's actually provided.
-  // The edge function currently never returns liked_post_ids / is_liked,
-  // so in that case we keep the locally-persisted set (loaded at init)
-  // instead of wiping it back to empty on every load/refresh.
+  // Server remains the source of truth for liked state. Nothing is persisted
+  // to localStorage/sessionStorage; every refresh reuses backend values when
+  // provided and otherwise falls back to an unliked UI.
   if(Array.isArray(res.liked_post_ids)){
     _cache.likedPostIds = new Set(res.liked_post_ids);
-    saveLikedPostIds();
   } else if(freshPosts.some(p=>p.is_liked)){
     _cache.likedPostIds = new Set(freshPosts.filter(p=>p.is_liked).map(p=>p.id));
-    saveLikedPostIds();
+  } else {
+    _cache.likedPostIds = new Set();
   }
 
   // Rank: on refresh, merge intelligently; on first load just rank

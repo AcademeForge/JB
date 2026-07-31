@@ -307,6 +307,10 @@ async function nxSuggestedFollow(key, name, btn){
       }
     },1200);
     showToast('Following '+name+'! DMs are now unlocked.');
+    saveSnapshot('following_me',_cache.myFollowing);
+    nxUpdatePendingFollowsBadge();
+    nxRenderNotifications();
+    await Promise.all([nxLoadChatsFromConnections(), nxPreloadConnections()]);
   } else {
     btn.disabled=false; btn.textContent='Follow';
     showToast(res?.message||'Could not follow.','err');

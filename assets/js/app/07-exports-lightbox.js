@@ -209,6 +209,10 @@ window.nxCloseBlockedUsers=nxCloseBlockedUsers;
 window.nxBlockCurrentPeer=nxBlockCurrentPeer;
 window.nxUnblockCurrentPeer=nxUnblockCurrentPeer;
 window.nxUnblockFromList=nxUnblockFromList;
+window.nxOpenNotifications=nxOpenNotifications;
+window.nxCloseNotifications=nxCloseNotifications;
+window.nxNotificationFollowBack=nxNotificationFollowBack;
+window.nxSetThemeMode=nxSetThemeMode;
 window.goToLogin=goToLogin;
 
 /* ═══════════════════════════════════════════════════

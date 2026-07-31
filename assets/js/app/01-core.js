@@ -43,36 +43,6 @@ function saveChatReadTs(){
 }
 
 /* ═══════════════════════════════════════════════════
-   POST LIKE-STATE PERSISTENCE
-   The edge function does not report which posts the
-   current student already liked, so likedPostIds is
-   mirrored to localStorage (scoped to the current account)
-   the same way chatReadTs is above — a liked post stays red
-   after a refresh, app close/reopen, etc. until unliked.
-═══════════════════════════════════════════════════ */
-function likedPostIdsStorageKey(){
-  const key=sKey();
-  return key ? 'af_liked_posts:'+key : null;
-}
-function loadLikedPostIds(){
-  const storageKey=likedPostIdsStorageKey();
-  if(!storageKey) return new Set();
-  try{
-    const raw=localStorage.getItem(storageKey);
-    if(!raw) return new Set();
-    const arr=JSON.parse(raw);
-    return new Set(Array.isArray(arr)?arr:[]);
-  }catch(e){ return new Set(); }
-}
-function saveLikedPostIds(){
-  const storageKey=likedPostIdsStorageKey();
-  if(!storageKey) return;
-  try{
-    localStorage.setItem(storageKey, JSON.stringify([..._cache.likedPostIds]));
-  }catch(e){ /* storage full or unavailable — liked-state just won't persist this time */ }
-}
-
-/* ═══════════════════════════════════════════════════
    GENERIC "STALE-WHILE-REVALIDATE" SNAPSHOT CACHE
    This is the same fetch pattern big apps (Instagram,
    Facebook, etc.) use: the last successful response for
@@ -133,6 +103,9 @@ const _cache = {
 
   /* Misc */
   myVerified: false,
+  notifications: [],
+  notifiedFollowerKeys: new Set(),
+  notifiedMessageKeys: new Set(),
 };
 
 /* ═══════════════════════════════════════════════════
@@ -207,15 +180,22 @@ function getMyUsername(){return localStorage.getItem('af_username')||'';}
 function getMyAvatarUrl(){return localStorage.getItem('af_avatar_url')||'';}
 
 /* ═══════════════════════════════════════════════════
-   THEME (reads from localStorage, no runtime writes for theme)
+   THEME
 ═══════════════════════════════════════════════════ */
+function getThemeMode(){
+  return localStorage.getItem('af_theme_mode') || (localStorage.getItem('af_dark_mode')==='1' ? 'dark' : 'system');
+}
 function syncTheme(){
-  const dark = localStorage.getItem('af_dark_mode')==='1';
+  const mode = getThemeMode();
+  const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const dark = mode==='dark' || (mode==='system' && systemDark);
   document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  const sel=$('themeModeSelect');
+  if(sel) sel.value=mode;
 }
 syncTheme();
 window.addEventListener('storage',e=>{
-  if(e.key==='af_dark_mode') syncTheme();
+  if(e.key==='af_dark_mode'||e.key==='af_theme_mode') syncTheme();
   if(['af_student_email','af_student_mobile','af_student_name'].includes(e.key)){
     const stillLoggedIn = !!(localStorage.getItem('af_student_email')||localStorage.getItem('af_student_mobile'));
     if(!stillLoggedIn){
@@ -226,12 +206,20 @@ window.addEventListener('storage',e=>{
     init();
   }
 });
-function nxToggleDarkMode(){
-  const isDark = localStorage.getItem('af_dark_mode')==='1';
-  localStorage.setItem('af_dark_mode', isDark?'0':'1');
+if(window.matchMedia){
+  try{ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncTheme); }catch(e){}
+}
+function nxSetThemeMode(mode){
+  const next=['system','dark','light'].includes(mode)?mode:'system';
+  localStorage.setItem('af_theme_mode', next);
+  localStorage.setItem('af_dark_mode', next==='dark'?'1':'0');
   syncTheme();
 }
+function nxToggleDarkMode(){
+  nxSetThemeMode(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+}
 window.nxToggleDarkMode = nxToggleDarkMode;
+window.nxSetThemeMode = nxSetThemeMode;
 function goToLogin(){
   sessionStorage.setItem('af_last_tab','student');
   if(window.afAuth && typeof window.afAuth.enterGate==='function'){
@@ -243,7 +231,7 @@ function goToLogin(){
 }
 
 /**
- * Fully logs the student out of AF Nexus and wipes every trace of their
+ * Fully logs the student out of JB Knowledge Park and wipes every trace of their
  * session from this page before redirecting:
  * 1. Removes every af_* identity/profile key from localStorage
  * (email, mobile, name, username, bio, avatar, dark mode is kept
@@ -257,15 +245,16 @@ function goToLogin(){
  * 5. Unsubscribes the realtime DM channel tied to this account.
  * 6. Closes every open screen/modal so the next init() starts clean.
  */
-const AF_KEEP_ON_LOGOUT = new Set(['af_dark_mode']);
+const AF_KEEP_ON_LOGOUT = new Set();
 function nxClearAllCaches(){
-  // 1. Wipe every af_* key in localStorage except explicitly kept ones
+  // 1. Wipe app keys from localStorage and sessionStorage.
   Object.keys(localStorage)
     .filter(k=>k.startsWith('af_') && !AF_KEEP_ON_LOGOUT.has(k))
     .forEach(k=>localStorage.removeItem(k));
 
-  // 2. Wipe session-scoped data
-  sessionStorage.removeItem('af_last_tab');
+  Object.keys(sessionStorage)
+    .filter(k=>k.startsWith('af_'))
+    .forEach(k=>sessionStorage.removeItem(k));
 
   // 3. Empty the in-memory cache completely (new objects, not just .clear())
   //    to guarantee no stale references survive in closures.
@@ -283,6 +272,9 @@ function nxClearAllCaches(){
   _cache.likedPostIds = new Set();
   _cache.blockedKeys = new Set();
   _cache.myVerified = false;
+  _cache.notifications = [];
+  _cache.notifiedFollowerKeys = new Set();
+  _cache.notifiedMessageKeys = new Set();
 
   // 4. Reset module-level state
   _activeTab='feed';
@@ -306,8 +298,30 @@ function nxClearAllCaches(){
     const el=$(id); if(el) el.style.display='none';
   });
 }
-function nxLogout(){
+async function nxClearBrowserCaches(){
+  try{
+    if('caches' in window){
+      const names=await caches.keys();
+      await Promise.all(names.map(n=>caches.delete(n)));
+    }
+  }catch(e){}
+  try{
+    if(indexedDB && indexedDB.databases){
+      const dbs=await indexedDB.databases();
+      await Promise.all((dbs||[]).filter(db=>db.name).map(db=>new Promise(resolve=>{
+        const req=indexedDB.deleteDatabase(db.name);
+        req.onsuccess=req.onerror=req.onblocked=()=>resolve();
+      })));
+    } else if(indexedDB){
+      ['af_story_video_cache_v1'].forEach(name=>{
+        try{ indexedDB.deleteDatabase(name); }catch(e){}
+      });
+    }
+  }catch(e){}
+}
+async function nxLogout(){
   nxClearAllCaches();
+  await nxClearBrowserCaches();
   goToLogin();
 }
 window.nxLogout = nxLogout;
@@ -444,6 +458,103 @@ function showToast(msg, type='ok', title=''){
   w.appendChild(d);
   requestAnimationFrame(()=>d.classList.add('show'));
   setTimeout(()=>{d.classList.remove('show');setTimeout(()=>d.remove(),220);},2800);
+}
+
+function nxAddNotification(item){
+  if(!item || !item.id) return;
+  const next={...item, ts:item.ts||Date.now(), read:false};
+  const idx=_cache.notifications.findIndex(n=>n.id===item.id);
+  if(idx>=0) _cache.notifications[idx]={..._cache.notifications[idx],...next};
+  else _cache.notifications.unshift(next);
+  _cache.notifications=_cache.notifications.slice(0,50);
+  nxRenderNotifications();
+}
+
+function nxScanFollowerNotifications(followers){
+  if(!Array.isArray(followers)) return;
+  followers.forEach(u=>{
+    const key=String(u.student_key||u.key||'');
+    if(!key || key===sKey() || _cache.notifiedFollowerKeys.has(key)) return;
+    _cache.notifiedFollowerKeys.add(key);
+    const name=u.student_name||u.name||'Someone';
+    nxAddNotification({
+      id:'follow:'+key,
+      type:'follow',
+      key,
+      name,
+      avatar_url:u.avatar_url||'',
+      emoji:u.emoji||'',
+      is_verified:!!u.is_verified,
+      message:name+' followed you.'
+    });
+  });
+}
+
+function nxAddMessageNotification(peer, preview){
+  if(!peer || !peer.student_key) return;
+  const id='msg:'+peer.student_key+':'+(preview||'');
+  if(_cache.notifiedMessageKeys.has(id)) return;
+  _cache.notifiedMessageKeys.add(id);
+  const name=peer.student_name||'Someone';
+  nxAddNotification({
+    id,
+    type:'message',
+    key:peer.student_key,
+    name,
+    avatar_url:peer.avatar_url||'',
+    emoji:peer.emoji||'',
+    is_verified:!!peer.is_verified,
+    message:name+' messaged you.',
+    preview
+  });
+}
+
+function nxRenderNotifications(){
+  const dot=$('feedNotifyDot');
+  const unread=_cache.notifications.some(n=>!n.read);
+  if(dot) dot.classList.toggle('hidden', !unread);
+  const box=$('notificationList');
+  if(!box) return;
+  if(!_cache.notifications.length){
+    box.innerHTML='<div class="notification-empty">No notifications yet.</div>';
+    return;
+  }
+  box.innerHTML=_cache.notifications.map(n=>{
+    const safeKey=esc(n.key||'');
+    const safeName=esc(n.name||'Student').replace(/'/g,'&#39;');
+    const action=n.type==='follow' && !_cache.followingKeys.has(String(n.key))
+      ? `<button class="notification-action" onclick="nxNotificationFollowBack('${safeKey}','${safeName}',this)">Follow Back</button>`
+      : (n.type==='message'
+          ? `<button class="notification-action" onclick="nxOpenDM('${safeKey}','${safeName}');nxCloseNotifications();">Open</button>`
+          : '');
+    return `<div class="notification-row${n.read?'':' unread'}">
+      ${avatarHTML(n.name,n.emoji||'',n.avatar_url||'',' avatar-sm','',!!n.is_verified)}
+      <div class="notification-main">
+        <strong>${esc(n.message)}</strong>
+        ${n.preview?`<p>${esc(n.preview)}</p>`:`<p>${esc(timeAgo(n.ts))}</p>`}
+      </div>
+      ${action}
+    </div>`;
+  }).join('');
+}
+
+function nxOpenNotifications(){
+  _cache.notifications=_cache.notifications.map(n=>({...n,read:true}));
+  nxBringToFront('notificationsModal');
+  $('notificationsModal').style.display='flex';
+  nxRenderNotifications();
+}
+function nxCloseNotifications(){
+  $('notificationsModal').style.display='none';
+  nxRenderNotifications();
+  nxForceRepaint();
+}
+async function nxNotificationFollowBack(key,name,btn){
+  if(btn){btn.disabled=true;btn.textContent='...';}
+  await nxSuggestedFollow(key,name,btn||{disabled:false,textContent:''});
+  _cache.notifications=_cache.notifications.filter(n=>!(n.type==='follow'&&String(n.key)===String(key)));
+  nxRenderNotifications();
+  if(_activeTab==='chats') nxLoadChatsFromConnections();
 }
 
 /* ═══════════════════════════════════════════════════

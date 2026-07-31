@@ -146,9 +146,6 @@ async function nxLikePost(pid, btnEl){
     if(pIdx>=0) _cache.posts[pIdx].likes_count = newCount;
   }
 
-  // Persist locally so the red/liked state survives refresh & app reopen
-  saveLikedPostIds();
-
   try{
     await edgeCall({action:'toggle_post_like',post_id:pid});
   } catch(e){
@@ -156,7 +153,6 @@ async function nxLikePost(pid, btnEl){
     const wasLikedNow = !_cache.likedPostIds.has(pid);
     if(wasLikedNow){ _cache.likedPostIds.delete(pid); btnEl&&btnEl.classList.remove('liked'); }
     else { _cache.likedPostIds.add(pid); btnEl&&btnEl.classList.add('liked'); }
-    saveLikedPostIds();
   } finally {
     _likeInFlight.delete(pid);
   }
@@ -179,21 +175,15 @@ function nxCloseComments(){
   _curPostId=null;
   nxForceRepaint();
 }
-const _commentsCache = new Map();
 async function nxLoadComments(pid){
   const box=$('commentsList'); if(!box) return;
-  if(_commentsCache.has(pid)){
-    renderComments(_commentsCache.get(pid));
-  } else {
-    box.innerHTML='<div class="state-msg">Loading…</div>';
-  }
+  box.innerHTML='<div class="comment-skeleton"><div class="af-skel chat-skel-row"></div><div class="af-skel chat-skel-row"></div><div class="af-skel chat-skel-row"></div></div>';
   const res=await edgeCall({action:'fetch_comments',post_id:pid});
   if(!res||!res.ok){
-    if(!_commentsCache.has(pid)) box.innerHTML='<div class="state-msg"><span>Could not load.</span></div>';
+    box.innerHTML='<div class="state-msg"><span>Could not load.</span></div>';
     return;
   }
   const list=Array.isArray(res.comments)?res.comments:[];
-  _commentsCache.set(pid,list);
   renderComments(list);
 }
 function renderComments(list){
@@ -297,7 +287,6 @@ async function nxCreateComment(){
   const cc=$('cmt-cnt-'+_curPostId);
   if(cc) cc.textContent=Math.max(0,parseInt(cc.textContent||0)+1);
 
-  _commentsCache.delete(_curPostId);
   // Fire-and-forget: comment list refreshes in background, button re-enables immediately
   nxLoadComments(_curPostId);
 }
@@ -361,7 +350,6 @@ async function nxCreateReply(){
   const cc=$('cmt-cnt-'+_curPostId);
   if(cc) cc.textContent=Math.max(0,parseInt(cc.textContent||0)+1);
 
-  _commentsCache.delete(_curPostId);
   // Fire-and-forget: comment list refreshes in background
   nxLoadComments(_curPostId);
 }
@@ -421,7 +409,6 @@ async function nxDeleteTarget(){
     if(pIdx>=0 && _cache.posts[pIdx].comments_count > 0) _cache.posts[pIdx].comments_count--;
     const cc=$('cmt-cnt-'+_curPostId);
     if(cc) cc.textContent=Math.max(0,parseInt(cc.textContent||0)-1);
-    _commentsCache.delete(_curPostId);
     await nxLoadComments(_curPostId);
   }
   showToast('Deleted successfully.');
@@ -484,6 +471,7 @@ async function nxLoadBlockedUsers(){
 }
 
 function nxOpenMainMenu(){
+  syncTheme();
   nxBringToFront('mainMenuModal');
   $('mainMenuModal').style.display='flex';
 }
@@ -709,9 +697,11 @@ async function nxLoadProfileMeta(key){
 }
 async function nxToggleFollow(){
   if(!_profileData) return;
+  const targetKey=String(_profileData.key);
   const res=await edgeCall({action:'toggle_follow',target_key:_profileData.key});
   if(!res||!res.ok){showToast(res?.message||'Could not update follow.','err');return;}
   _profileIsFollowing=!!res.following;
+  _profileData.is_following=_profileIsFollowing;
   const _stillFollowsMe=!!(_profileData&&_profileData.they_follow_me);
   if(!_profileIsFollowing && _stillFollowsMe){
     $('profileFollowBtn').textContent='Follow Back';
@@ -722,16 +712,24 @@ async function nxToggleFollow(){
   }
   // Update local following cache
   if(_profileIsFollowing){
-    _cache.followingKeys.add(_profileData.key);
+    _cache.followingKeys.add(targetKey);
+    if(!_cache.myFollowing.some(u=>String(u.student_key||u.key||'')===targetKey)){
+      _cache.myFollowing.push(_cache.profiles.get(targetKey)||{student_key:targetKey,student_name:_profileData.name||_profileData.student_name||'Student'});
+    }
   } else {
-    _cache.followingKeys.delete(_profileData.key);
+    _cache.followingKeys.delete(targetKey);
+    _cache.myFollowing=_cache.myFollowing.filter(u=>String(u.student_key||u.key||'')!==targetKey);
   }
   nxRenderSuggestedUsers(); // refresh suggested list in DMs tab
   const c=$('profileFollowersCount');
   c.textContent=Math.max(0,Number(c.textContent||0)+(_profileIsFollowing?1:-1));
   // Update following keys cache
-  if(_profileIsFollowing) _cache.followingKeys.add(String(_profileData.key));
-  else _cache.followingKeys.delete(String(_profileData.key));
+  if(_profileIsFollowing) _cache.followingKeys.add(targetKey);
+  else _cache.followingKeys.delete(targetKey);
+  saveSnapshot('following_me',_cache.myFollowing);
+  nxUpdatePendingFollowsBadge();
+  nxRenderNotifications();
+  await Promise.all([nxLoadChatsFromConnections(), nxPreloadConnections()]);
 }
 async function nxLoadProfilePosts(key){
   const res=await edgeCall({action:'student_posts',target_key:key});
@@ -925,9 +923,14 @@ async function nxUnfollowFromList(key, name, btn){
   if(res && res.ok && !res.following){
     _cache.followingKeys.delete(key);
     _cache.myFollowing=_cache.myFollowing.filter(u=>String(u.student_key||u.key||'')!==key);
+    saveSnapshot('following_me',_cache.myFollowing);
+    nxUpdatePendingFollowsBadge();
+    nxRenderSuggestedUsers();
+    nxRenderNotifications();
     showToast('Unfollowed '+name+'.');
     const row=btn.closest('[data-follow-row]');
     if(row){row.style.transition='opacity .3s';row.style.opacity='0';setTimeout(()=>row.remove(),300);}
+    await Promise.all([nxLoadChatsFromConnections(), nxPreloadConnections()]);
   } else {
     btn.disabled=false; btn.textContent='Unfollow';
     showToast(res?.message||'Could not unfollow.','err');
