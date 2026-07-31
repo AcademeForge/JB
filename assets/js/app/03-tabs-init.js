@@ -1,7 +1,7 @@
 ﻿/* ═══════════════════════════════════════════════════
    TAB SWITCH
 ═══════════════════════════════════════════════════ */
-function nxSwitchTab(tab){
+async function nxSwitchTab(tab){
   if(_activeTab==='feed' && $('feed')) _cache.feedScrollTop = $('feed').scrollTop;
 
   _activeTab = tab;
@@ -24,6 +24,7 @@ function nxSwitchTab(tab){
   nxRenderChatList();
   nxUpdateUnreadBadge();
   nxStartChatListPoll();
+  await nxLoadChatsFromConnections();
 }
 
 /* ═══════════════════════════════════════════════════
@@ -435,8 +436,15 @@ async function nxRefreshGlobal(){
 
 function nxSetMode(m){
   _mode=m==='recent'?'recent':'relevant';
-  $('pillRelevant').classList.toggle('active',_mode==='relevant');
-  $('pillRecent').classList.toggle('active',_mode==='recent');
+  if($('pillRelevant')){
+    $('pillRelevant').classList.toggle('active',_mode==='relevant');
+    $('pillRelevant').setAttribute('aria-selected', String(_mode==='relevant'));
+  }
+  if($('pillRecent')){
+    $('pillRecent').classList.toggle('active',_mode==='recent');
+    $('pillRecent').setAttribute('aria-selected', String(_mode==='recent'));
+  }
+  if($('postsList')) $('postsList').innerHTML='<div class="state-msg">Loading posts...</div>';
   nxLoadPosts(false);
 }
 
