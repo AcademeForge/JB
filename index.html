@@ -6,62 +6,54 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="theme-color" content="#4f46e5"/>
 <meta name="mobile-web-app-capable" content="yes"/>
-<title>JB · Community</title>
+<title>JB Knowledge Park · Community</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link rel="icon" type="image/jpeg" href="/IMG/AF%20LOGO%202.jpeg">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="assets/css/styles.css"/>
 <link rel="stylesheet" href="assets/css/auth.css"/>
 </head>
 <body>
 <div class="af-shell" id="shell">
   <div id="pullIndicator" class="pull-indicator">↻ Refreshing…</div>
-  <section id="authFlow" aria-label="AF Nexus login">
-    <div id="viewWelcome" class="auth-view visible">
-      <div class="auth-panel auth-welcome">
-        <div class="auth-brand-row">
-          <div class="auth-logo">
-            <img src="/IMG/AF%20LOGO%202.jpeg" alt="AF" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/>
-            <span style="display:none">JB</span>
-          </div>
-          <span class="auth-pill">Community</span>
-        </div>
-        <div class="auth-hero">
-          <h1>AF Nexus</h1>
-          <p>Connect with fellow learners, share posts, and continue conversations in one place.</p>
-        </div>
-        <div class="auth-feature-grid" aria-hidden="true">
-          <span>Feed</span><span>Search</span><span>Chats</span><span>Profile</span>
-        </div>
-        <button class="auth-primary" type="button" onclick="showAuthView('login')">Log in</button>
-        <button class="auth-secondary" type="button" onclick="window.location.href='https://signup.academeforge.in'">Create account</button>
-      </div>
+  <section id="authFlow" aria-label="JB Knowledge Park login">
+    <div class="auth-bg-canvas" aria-hidden="true">
+      <div class="auth-bg-gradient-1"></div>
+      <div class="auth-bg-gradient-2"></div>
+      <div class="auth-bg-gradient-3"></div>
+      <div class="auth-bg-grid"></div>
+      <div class="auth-bg-symbols">∑ π ∞ θ Δ √ ∫</div>
+      <div class="auth-particles" id="authParticles"></div>
     </div>
-
-    <div id="viewLogin" class="auth-view">
-      <div class="auth-panel auth-login">
-        <button class="auth-back" type="button" onclick="showAuthView('welcome')" aria-label="Back">Back</button>
-        <div class="auth-login-head">
-          <div class="auth-logo auth-logo-large">
-            <img src="/IMG/AF%20LOGO%202.jpeg" alt="AcademeForge" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/>
-            <span style="display:none">JB</span>
+    <div class="auth-wrapper">
+      <div class="auth-shell">
+        <form class="auth-card" role="main" onsubmit="event.preventDefault();doAcademeLogin();">
+          <div class="auth-card-head">
+            <div class="auth-header">
+              <div class="auth-logo" aria-hidden="true">
+                <img src="/IMG/AF%20LOGO%202.jpeg" alt="AcademeForge logo" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+                <span class="auth-logo-text">JB</span>
+              </div>
+              <h1 class="auth-title">JB Knowledge Park</h1>
+              <p class="auth-sub" id="authSub">Sign in with your credentials to access your student community.</p>
+            </div>
+            <div class="tab-row" id="authTabs" role="tablist">
+              <button class="tab-btn active" type="button" role="tab" aria-selected="true">Login</button>
+              <button class="tab-btn" type="button" onclick="window.location.href='https://signup.academeforge.in'">Create ID</button>
+            </div>
           </div>
-          <h2>Welcome Back</h2>
-          <p>Use your AcademeForge account to continue.</p>
-        </div>
-        <form class="auth-card" onsubmit="event.preventDefault();doAcademeLogin();">
-          <label class="auth-field">
-            <span>Student ID / Phone</span>
-            <input id="alLoginId" type="tel" placeholder="Student ID or phone number" autocomplete="username"/>
-          </label>
-          <label class="auth-field">
-            <span>Password</span>
-            <input id="alPassword" type="password" placeholder="Enter your password" autocomplete="current-password"/>
-          </label>
-          <button class="auth-primary" type="submit" id="alLoginBtn"><span>Log in</span></button>
-          <button class="auth-link" type="button" onclick="window.location.href='https://reset.academeforge.in'">Forgot password?</button>
-          <div class="auth-msg" id="alMsg" role="status" aria-live="polite"></div>
+          <div class="auth-card-body">
+            <label class="form-label" for="alLoginId">Student ID</label>
+            <input id="alLoginId" class="form-input" type="tel" placeholder="Enter your Student ID or phone" autocomplete="username" inputmode="numeric">
+            <label class="form-label" for="alPassword">Password</label>
+            <input id="alPassword" class="form-input" type="password" placeholder="Enter your password" autocomplete="current-password">
+            <button class="btn-primary" type="submit" id="alLoginBtn"><span>Sign In to Community</span></button>
+            <button class="btn-ghost" type="button" onclick="window.location.href='https://reset.academeforge.in'">Forgot Password?</button>
+            <div class="auth-msg" id="alMsg" role="status" aria-live="polite"></div>
+            <div class="auth-note">Need help? Contact <a href="mailto:help@academeforge.in">help@academeforge.in</a></div>
+          </div>
         </form>
       </div>
     </div>
@@ -85,7 +77,11 @@
   <div class="af-view active" id="mainView">
     <header class="af-topbar" id="hdr">
       <div class="af-topbar-flex">
-        <div class="af-topbar-headline">JB Knowledge Park</div>
+        <div class="af-topbar-headline" id="mainHeaderTitle">JB Knowledge Park</div>
+        <button class="af-hdr-icon-btn feed-notify-btn" id="feedNotifyBtn" onclick="nxOpenNotifications()" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span class="notify-dot hidden" id="feedNotifyDot"></span>
+        </button>
       </div>
     </header>
 
@@ -288,14 +284,23 @@
   </div>
 
   <!-- ── MODALS ── -->
-  <div class="modal-ov" id="followListModal" onclick="nxCloseFollowList()">
-    <div class="modal-card" onclick="event.stopPropagation()" style="max-height:80dvh;">
-      <div class="modal-drag"></div>
-      <div class="modal-head">
+  <div class="modal-ov fullscreen-sheet" id="followListModal" onclick="nxCloseFollowList()">
+    <div class="modal-card fullscreen-card" onclick="event.stopPropagation()">
+      <div class="modal-head fullscreen-head">
         <div><h3 id="followListTitle">Followers</h3></div>
-        <button class="modal-close" onclick="nxCloseFollowList()">✕</button>
+        <button class="modal-close sheet-x" onclick="nxCloseFollowList()" aria-label="Close">✕</button>
       </div>
       <div class="modal-body" id="followListBody" style="padding:0;gap:0;"></div>
+    </div>
+  </div>
+
+  <div class="modal-ov fullscreen-sheet" id="notificationsModal" onclick="nxCloseNotifications()">
+    <div class="modal-card fullscreen-card" onclick="event.stopPropagation()">
+      <div class="modal-head fullscreen-head">
+        <div><h3>Notifications</h3><p>Followers and messages</p></div>
+        <button class="modal-close sheet-x" onclick="nxCloseNotifications()" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body notification-list" id="notificationList" style="padding:0;gap:0;"></div>
     </div>
   </div>
 
@@ -574,13 +579,28 @@
     </div>
   </div>
 
-  <div class="modal-ov" id="mainMenuModal" onclick="nxCloseMainMenu()">
-    <div class="menu-sheet" onclick="event.stopPropagation()">
-      <div class="modal-drag"></div>
-      <div class="menu-label">Settings</div>
-      <button onclick="nxOpenBlockedUsers()">🚫 Blocked Users</button>
-      <button onclick="nxOpenEditProfile();nxCloseMainMenu();">✏️ Edit Profile</button>
-      <button onclick="nxCloseMainMenu()">✕ Cancel</button>
+  <div class="modal-ov fullscreen-sheet" id="mainMenuModal" onclick="nxCloseMainMenu()">
+    <div class="modal-card fullscreen-card settings-card" onclick="event.stopPropagation()">
+      <div class="modal-head fullscreen-head">
+        <div><h3>Settings</h3><p>Profile, privacy and appearance</p></div>
+        <button class="modal-close sheet-x" onclick="nxCloseMainMenu()" aria-label="Close">✕</button>
+      </div>
+      <div class="settings-list">
+        <div class="settings-row">
+          <div>
+            <strong>Theme</strong>
+            <span>Choose how JB Knowledge Park looks on this device.</span>
+          </div>
+          <select class="theme-select" id="themeModeSelect" onchange="nxSetThemeMode(this.value)">
+            <option value="system">System</option>
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+          </select>
+        </div>
+        <button class="settings-action" onclick="nxOpenEditProfile();nxCloseMainMenu();">Edit Profile</button>
+        <button class="settings-action" onclick="nxOpenBlockedUsers()">Blocked Users</button>
+        <button class="settings-action danger" onclick="nxLogout()">Log out</button>
+      </div>
     </div>
   </div>
 
