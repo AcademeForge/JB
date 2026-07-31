@@ -1,0 +1,646 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="assets/js/theme.js"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#4f46e5"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<title>AF Nexus · Community</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="icon" type="image/jpeg" href="/IMG/AF%20LOGO%202.jpeg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/css/styles.css"/>
+<link rel="stylesheet" href="assets/css/auth.css"/>
+</head>
+<body>
+<div class="af-shell" id="shell">
+  <div id="pullIndicator" class="pull-indicator">↻ Refreshing…</div>
+  <section id="authFlow" aria-label="AF Nexus login">
+    <div id="viewWelcome" class="auth-view visible">
+      <div class="auth-panel auth-welcome">
+        <div class="auth-brand-row">
+          <div class="auth-logo">
+            <img src="/IMG/AF%20LOGO%202.jpeg" alt="AF" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/>
+            <span style="display:none">AF</span>
+          </div>
+          <span class="auth-pill">Community</span>
+        </div>
+        <div class="auth-hero">
+          <h1>AF Nexus</h1>
+          <p>Connect with fellow learners, share posts, and continue conversations in one place.</p>
+        </div>
+        <div class="auth-feature-grid" aria-hidden="true">
+          <span>Feed</span><span>Search</span><span>Chats</span><span>Profile</span>
+        </div>
+        <button class="auth-primary" type="button" onclick="showAuthView('login')">Log in</button>
+        <button class="auth-secondary" type="button" onclick="window.location.href='https://signup.academeforge.in'">Create account</button>
+      </div>
+    </div>
+
+    <div id="viewLogin" class="auth-view">
+      <div class="auth-panel auth-login">
+        <button class="auth-back" type="button" onclick="showAuthView('welcome')" aria-label="Back">Back</button>
+        <div class="auth-login-head">
+          <div class="auth-logo auth-logo-large">
+            <img src="/IMG/AF%20LOGO%202.jpeg" alt="AcademeForge" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/>
+            <span style="display:none">AF</span>
+          </div>
+          <h2>Welcome Back</h2>
+          <p>Use your AcademeForge student account to continue.</p>
+        </div>
+        <form class="auth-card" onsubmit="event.preventDefault();doAcademeLogin();">
+          <label class="auth-field">
+            <span>Student ID / Phone</span>
+            <input id="alLoginId" type="tel" placeholder="Student ID or phone number" autocomplete="username"/>
+          </label>
+          <label class="auth-field">
+            <span>Password</span>
+            <input id="alPassword" type="password" placeholder="Enter your password" autocomplete="current-password"/>
+          </label>
+          <button class="auth-primary" type="submit" id="alLoginBtn"><span>Log in</span></button>
+          <button class="auth-link" type="button" onclick="window.location.href='https://reset.academeforge.in'">Forgot password?</button>
+          <div class="auth-msg" id="alMsg" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── IMAGE LIGHTBOX ── -->
+  <div id="imgLightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button class="lb-close" onclick="nxCloseLightbox()" aria-label="Close">✕</button>
+    <div class="lb-img-wrap" id="lbImgWrap">
+      <img id="lbImg" src="" alt="Full size image"/>
+    </div>
+    <div class="lb-zoom-bar">
+      <button onclick="nxLbZoom(-0.25)" aria-label="Zoom out">−</button>
+      <span class="lb-zoom-pct" id="lbZoomPct">100%</span>
+      <button onclick="nxLbZoom(0.25)" aria-label="Zoom in">+</button>
+    </div>
+  </div>
+
+ <!-- ── VIEWS ── -->
+  <!-- 1. MAIN FEED/CHATS -->
+  <div class="af-view active" id="mainView">
+    <header class="af-topbar" id="hdr">
+      <div class="af-topbar-flex">
+        <div class="af-topbar-headline">AF Nexus</div>
+      </div>
+    </header>
+
+    <div class="view-switch hidden" id="mainTabBar" aria-hidden="true">
+      <button class="view-switch-btn active" id="tabFeed" type="button">Feed</button>
+      <button class="view-switch-btn" id="tabChats" type="button">Chats <span class="vs-badge hidden" id="chatBadge" style="background:var(--rose);color:#fff;padding:2px 6px;border-radius:99px;font-size:10px;">0 new</span><span id="pendingFollowsBadge" style="display:none;background:#6366f1;color:#fff;padding:2px 6px;border-radius:99px;font-size:10px;margin-left:2px;font-weight:700;"></span></button>
+    </div>
+
+    <!-- FEED TAB -->
+    <div class="af-page" id="feed" style="padding-bottom:120px;display:flex;flex-direction:column;">
+      <!-- STORIES BAR -->
+      <div class="stories-bar" id="storiesBar">
+        <div class="stories-scroll" id="storiesScroll">
+          <!-- Add My Story / View My Story -->
+          <div class="story-item story-add" id="yourStoryItem" onclick="nxYourStoryClick()">
+            <div class="story-ring story-ring-add" id="yourStoryRing">
+              <div class="story-avatar-wrap" id="myStoryAvatar">
+                <span id="myStoryAvatarInner"></span>
+                <div class="story-add-plus" id="yourStoryPlus" onclick="event.stopPropagation();nxOpenStoryComposer()">+</div>
+              </div>
+            </div>
+            <span class="story-label">Your Story</span>
+          </div>
+          <!-- Other users' story items are rendered here by JS (class="story-other") -->
+        </div>
+      </div>
+      <div class="username-banner hidden" id="usernameBanner">
+        <span class="t">Set a username so others can find your profile.</span>
+        <button class="af-btn-primary" style="height:36px;font-size:13px;" onclick="nxOpenEditProfile()">Set up</button>
+      </div>
+      <div class="af-tabs" id="filterBar">
+        <button class="af-tab-btn active" id="pillRelevant" onclick="nxSetMode('relevant')">Relevant</button>
+        <button class="af-tab-btn" id="pillRecent" onclick="nxSetMode('recent')">Recent</button>
+      </div>
+      <div class="post-list" id="postsList">
+        <!-- Skeleton placeholder rendered by JS -->
+        <div class="post-card af-skel" style="height:120px;"></div>
+        <div class="post-card af-skel" style="height:100px;"></div>
+        <div class="post-card af-skel" style="height:140px;"></div>
+      </div>
+    </div>
+
+    <!-- CHATS TAB -->
+    <div class="af-page hidden" id="chatsTab" style="padding-bottom:120px;display:flex;flex-direction:column;background:var(--bg);">
+      <!-- Unlocked DMs: conversations the user has actually exchanged at least 1 message in -->
+      <div class="chat-list" id="chatList">
+        <div class="state-msg">Loading…</div>
+      </div>
+      <!-- Suggested Users: people who follow you but you don't follow back -->
+      <div id="suggestedUsersWrap" style="display:none;padding:0 14px 14px;">
+        <div style="height:1px;background:var(--b1);margin:0 0 14px;"></div>
+        <div style="font-size:13px;font-weight:700;color:var(--tm);letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px;">Follow Back to Unlock DMs</div>
+        <div id="suggestedUsersList" style="display:flex;flex-direction:column;gap:8px;"></div>
+        <button type="button" class="suggested-show-more-btn hidden" id="suggestedShowMoreBtn" onclick="nxShowMoreSuggestions()">Show 5 more</button>
+        <div class="suggested-caught-up hidden" id="suggestedAllCaughtUp"><span>🎉</span><span>You're all caught up — no more follow suggestions.</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 2. STUDENT PROFILE SCREEN -->
+  <div class="profile-screen" id="profileScreen">
+    <div class="af-topbar">
+      <button class="af-back" onclick="nxCloseProfile()">←</button>
+      <div class="af-topbar-title" id="profileHdrName">Profile</div>
+    </div>
+    <div class="af-page" id="profilePageScroll" style="padding:0;">
+      <div id="profileTopCard" style="padding:24px 20px;background:var(--card-s);border-bottom:1px solid var(--b1);">
+        <div style="display:flex;align-items:center;gap:16px;">
+           <div class="avatar avatar-lg" id="profileAvatar" style="width:72px;height:72px;font-size:32px;"></div>
+           <div style="flex:1;min-width:0;">
+             <h2 id="profileName" style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></h2>
+             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+               <div id="profileUsername" style="font-size:13.5px;color:var(--tm);font-weight:600;"></div>
+               <span id="profileFollowsYouBadge" style="display:none;font-size:11px;font-weight:700;color:var(--tm);background:var(--b1);border-radius:6px;padding:2px 7px;letter-spacing:.02em;">Follows you</span>
+             </div>
+           </div>
+        </div>
+        <div id="profileBio" style="margin-top:16px;font-size:14px;color:var(--t2);line-height:1.6;"></div>
+        <div style="display:flex;gap:32px;margin-top:20px;">
+           <div onclick="nxOpenFollowersFor()" style="cursor:pointer;display:flex;flex-direction:column;"><strong id="profileFollowersCount" style="color:var(--t1);font-family:var(--fd);font-size:18px;line-height:1;">0</strong><span style="font-size:12px;color:var(--tm);font-weight:600;margin-top:4px;">Followers</span></div>
+           <div onclick="nxOpenFollowingFor()" style="cursor:pointer;display:flex;flex-direction:column;"><strong id="profileFollowingCount" style="color:var(--t1);font-family:var(--fd);font-size:18px;line-height:1;">0</strong><span style="font-size:12px;color:var(--tm);font-weight:600;margin-top:4px;">Following</span></div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:24px;">
+          <button id="profileFollowBtn" class="af-btn-primary" style="flex:1;" onclick="nxToggleFollow()">Follow</button>
+          <button id="profileMessageBtn" class="af-btn-secondary-outline" style="flex:1;" onclick="nxMessageFromProfile()">Message</button>
+        </div>
+      </div>
+      <div class="af-tabs" style="padding:14px 16px 0;background:var(--bg);border:none;">
+         <div class="af-tab-btn active" style="color:var(--t1);">Posts</div>
+      </div>
+      <div class="post-list" id="profilePostsList" style="background:var(--bg);">
+         <div class="state-msg">Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY PROFILE SCREEN -->
+  <div class="my-profile-screen" id="myProfileScreen">
+    <div class="af-topbar">
+      <button class="af-back" onclick="nxCloseMyProfile()">←</button>
+      <div class="af-topbar-title">My Profile</div>
+      <button class="af-hdr-icon-btn" onclick="nxOpenMainMenu()" aria-label="Settings" style="margin-left:auto;font-size:18px;">⋮</button>
+    </div>
+    <div class="af-page" id="myProfilePageScroll" style="padding:0;">
+      <div id="myProfileTopCard" style="padding:24px 20px;background:var(--card-s);border-bottom:1px solid var(--b1);">
+        <div style="display:flex;align-items:center;gap:16px;">
+           <div class="avatar avatar-lg" id="myProfileAvatar" style="width:72px;height:72px;font-size:32px;position:relative;overflow:visible;">
+             <div id="myProfileAvatarInner" style="width:72px;height:72px;border-radius:18px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:32px;"></div>
+           </div>
+           <div style="flex:1;min-width:0;">
+             <h2 id="myProfileName" style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></h2>
+             <div id="myProfileUsername" style="font-size:13.5px;color:var(--tm);font-weight:600;"></div>
+           </div>
+        </div>
+        <div id="myProfileBio" style="margin-top:16px;font-size:14px;color:var(--t2);line-height:1.6;"></div>
+        <div style="display:flex;gap:32px;margin-top:20px;">
+           <div onclick="nxOpenFollowers()" style="cursor:pointer;display:flex;flex-direction:column;"><strong id="myProfileFollowersCount" style="color:var(--t1);font-family:var(--fd);font-size:18px;line-height:1;">0</strong><span style="font-size:12px;color:var(--tm);font-weight:600;margin-top:4px;">Followers</span></div>
+           <div onclick="nxOpenFollowing()" style="cursor:pointer;display:flex;flex-direction:column;"><strong id="myProfileFollowingCount" style="color:var(--t1);font-family:var(--fd);font-size:18px;line-height:1;">0</strong><span style="font-size:12px;color:var(--tm);font-weight:600;margin-top:4px;">Following</span></div>
+           <div style="display:flex;flex-direction:column;"><strong id="myProfilePostsCount" style="color:var(--t1);font-family:var(--fd);font-size:18px;line-height:1;">0</strong><span style="font-size:12px;color:var(--tm);font-weight:600;margin-top:4px;">Posts</span></div>
+        </div>
+      </div>
+      <div class="af-tabs" style="padding:14px 16px 0;background:var(--bg);border:none;">
+         <div class="af-tab-btn active" style="color:var(--t1);">My Posts</div>
+      </div>
+      <div class="post-list" id="myProfilePostsList" style="background:var(--bg);">
+         <div class="state-msg">Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL SCREEN SEARCH -->
+  <div class="full-screen-view" id="searchScreen">
+    <div class="af-topbar">
+       <button class="af-back" onclick="nxCloseSearchScreen()">←</button>
+       <div style="flex:1;background:var(--inp);border-radius:11px;display:flex;align-items:center;padding:0 12px;height:38px;border:1.5px solid var(--b1);">
+          <span style="font-size:14px;color:var(--tm);margin-right:8px;">🔍</span>
+          <input type="text" id="fullSearchInp" placeholder="Search for users…" oninput="nxFullSearchTyping()" autocomplete="off" style="flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-family:var(--fb);font-size:14px;font-weight:500;"/>
+          <button id="fullSearchClear" style="display:none;color:var(--tm);font-size:16px;margin-left:8px;" onclick="nxClearFullSearch()">✕</button>
+       </div>
+    </div>
+    <div class="af-page" id="fullSearchResults" style="padding:12px;">
+       <div class="state-msg"><span>🔍</span><span>Search for students by name or username.</span></div>
+    </div>
+  </div>
+
+  <!-- DM THREAD SCREEN -->
+  <div class="dm-screen" id="dmScreen">
+    <div class="dm-hdr" id="dmHdr">
+      <button class="af-back" onclick="nxCloseDM()" style="background:transparent;border:none;width:auto;font-size:22px;margin-right:4px;">←</button>
+      <div class="avatar avatar-sm" id="dmPeerAvatar" onclick="nxOpenProfileFromDM()" style="cursor:pointer;"></div>
+      <div class="dm-hdr-info" onclick="nxOpenProfileFromDM()">
+        <div style="display:flex;align-items:center;gap:4px;">
+          <div class="dm-hdr-name" id="dmPeerName"></div>
+          <span class="verified-badge" id="dmPeerVerifiedBadge" style="display:none;">✔</span>
+          <span class="gold-badge" id="dmPeerGoldBadge" style="display:none;">★</span>
+        </div>
+        <div class="dm-hdr-status" id="dmHdrStatus"></div>
+      </div>
+      <button class="af-hdr-icon-btn" onclick="nxOpenDMSearch()" style="margin-left:auto;margin-right:2px;" aria-label="Search messages">🔍</button>
+      <button class="af-hdr-icon-btn" onclick="nxOpenDMOptions()" aria-label="Chat options">⋯</button>
+    </div>
+    <!-- DM inline search bar (hidden until search icon tapped) -->
+    <div class="dm-search-bar hidden" id="dmSearchBar">
+      <input id="dmSearchInput" class="dm-search-input" type="search" placeholder="Search messages…" oninput="nxDMSearchInput()" autocomplete="off"/>
+      <span id="dmSearchCount" class="dm-search-count"></span>
+      <button class="dm-search-nav" id="dmSearchPrev" onclick="nxDMSearchNav(-1)" aria-label="Previous match" disabled>↑</button>
+      <button class="dm-search-nav" id="dmSearchNext" onclick="nxDMSearchNav(1)"  aria-label="Next match"     disabled>↓</button>
+      <button class="dm-search-close" onclick="nxCloseDMSearch()" aria-label="Close search">✕</button>
+    </div>
+    <div class="dm-messages" id="dmMessages">
+      <div class="state-msg">Loading…</div>
+    </div>
+    
+    <!-- Image Attachment Preview in DM -->
+    <div id="dmImagePreviewWrap" class="hidden" style="padding:10px 14px; background:var(--hdr); border-top:1px solid var(--b1); position:relative;">
+      <div style="position:relative; display:inline-block;">
+         <img id="dmImagePreview" style="max-height:100px; border-radius:8px; box-shadow:var(--sh);"/>
+         <button onclick="nxRemoveDMImage()" style="position:absolute; top:-8px; right:-8px; background:var(--err); color:#fff; border-radius:50%; width:24px; height:24px; font-size:12px; display:flex; align-items:center; justify-content:center; box-shadow:var(--sh);">✕</button>
+      </div>
+    </div>
+
+    <div class="dm-edit-banner hidden" id="dmEditBanner">
+      <span>Editing message…</span>
+      <button onclick="nxCancelEditDM()">Cancel</button>
+    </div>
+    <div class="dm-reply-banner hidden" id="dmReplyBanner">
+      <span style="font-size:13px;flex-shrink:0;">↩</span>
+      <span class="dm-reply-banner-text" id="dmReplyPreview"></span>
+      <button class="dm-reply-cancel" onclick="nxCancelDMReply()">✕</button>
+    </div>
+    <div class="dm-input-area" style="position:relative;">
+      <div id="dmBlockedBanner" class="hidden" style="position:absolute;inset:0;background:var(--hdr);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--tm);z-index:5;backdrop-filter:blur(16px);border-top:1px solid var(--b1);">You cannot send messages to this user.</div>
+      
+      <!-- Attachment Icon -->
+      <button id="dmAttachBtn" onclick="nxAttachDMImage()" style="font-size:20px; color:var(--t2); display:flex; align-items:center; justify-content:center; flex-shrink:0; padding-bottom:10px;">📎</button>
+      <input type="file" id="dmImageInput" accept="image/*" class="hidden" onchange="nxHandleDMImage(this)"/>
+
+      <textarea class="dm-textarea" id="dmInput" rows="1" placeholder="Type a message…" oninput="nxDMTyping()"></textarea>
+      <button class="dm-send" id="dmSendBtn" onclick="nxSendDM()" disabled>➤</button>
+    </div>
+  </div>
+
+  <!-- ── MODALS ── -->
+  <div class="modal-ov" id="followListModal" onclick="nxCloseFollowList()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="max-height:80dvh;">
+      <div class="modal-drag"></div>
+      <div class="modal-head">
+        <div><h3 id="followListTitle">Followers</h3></div>
+        <button class="modal-close" onclick="nxCloseFollowList()">✕</button>
+      </div>
+      <div class="modal-body" id="followListBody" style="padding:0;gap:0;"></div>
+    </div>
+  </div>
+
+  <div class="modal-ov" id="editProfileModal" onclick="nxCloseEditProfile()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-drag"></div>
+      <div class="modal-head">
+        <div><h3>Edit Profile</h3><p>Customize your presence</p></div>
+        <button class="modal-close" onclick="nxCloseEditProfile()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-label">Profile Picture</div>
+        <div style="display:flex;align-items:center;gap:14px;padding:4px 0;">
+          <div class="avatar-upload-ring" onclick="document.getElementById('avatarFileInput').click()" style="cursor:pointer;">
+            <div class="avatar avatar-lg" id="editProfileAvatarPreview" style="width:64px;height:64px;font-size:28px;border-radius:16px;overflow:hidden;"></div>
+            <div class="upload-overlay" style="border-radius:16px;">📷</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:var(--t1);">Upload photo</div>
+            <div style="font-size:11.5px;color:var(--tm);margin-top:3px;">Tap the avatar to upload</div>
+            <button id="removeAvatarBtn" onclick="nxRemoveAvatar()" style="font-size:11.5px;color:var(--err);font-weight:700;margin-top:6px;display:none;">Remove photo</button>
+          </div>
+          <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="nxHandleAvatarUpload(this)"/>
+        </div>
+        <div class="field-label" style="margin-top:8px;">Display Name</div>
+        <input type="text" class="field" id="displayNameInput" placeholder="e.g. Rahul Kumar" maxlength="40" oninput="nxDisplayNameTyping()"/>
+        <span style="font-size:12px;font-weight:600;color:var(--tm);margin-top:-6px;" id="displayNameHint">2-40 characters. This is shown on your posts, comments and messages.</span>
+        <div class="field-label" style="margin-top:8px;">Username</div>
+        <input type="text" class="field" id="usernameInput" placeholder="e.g. rahul_42" maxlength="24" oninput="nxUsernameTyping()"/>
+        <span style="font-size:12px;font-weight:600;color:var(--tm);margin-top:-6px;" id="usernameHint">3-24 chars: lowercase letters, numbers, underscore.</span>
+        <div class="field-label" style="margin-top:8px;">Bio</div>
+        <textarea class="compose" id="bioInput" rows="2" style="min-height:70px;" placeholder="Say something about yourself…" maxlength="160"></textarea>
+        <div class="compose-foot" style="margin-top:8px;">
+          <span></span>
+          <button class="af-btn-primary" id="saveProfileBtn" onclick="nxSaveProfile()">Save Profile</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STORY VIEWER ── -->
+  <div class="story-viewer" id="storyViewer"
+    ontouchstart="nxSvTouchStart(event)"
+    ontouchend="nxSvTouchEnd(event)"
+    ontouchcancel="nxSvTouchEnd(event)"
+    ontouchmove="nxSvTouchMove(event)">
+    <div class="sv-progress" id="svProgress"></div>
+    <div class="sv-hdr">
+      <div id="svHdrClickable">
+        <div class="sv-hdr-av" id="svHdrAv"></div>
+        <div class="sv-hdr-info">
+          <div class="sv-hdr-name" id="svHdrName"></div>
+          <div class="sv-hdr-time" id="svHdrTime"></div>
+        </div>
+      </div>
+      <button class="sv-opts-btn" id="svOptsBtn" onclick="nxOpenStoryOpts()" style="display:none;" aria-label="Story options">⋯</button>
+      <button class="sv-close" onclick="nxCloseStoryViewer()">✕</button>
+    </div>
+    <!-- Story options dropdown (own story only) -->
+    <div class="sv-opts-menu" id="svOptsMenu">
+      <button class="sv-opts-delete" onclick="nxCloseStoryOpts();nxDeleteCurrentStory()">🗑 Delete Story</button>
+    </div>
+    <div class="sv-media" id="svMedia">
+      <div class="sv-tap-prev" onclick="nxStoryPrev()"></div>
+      <div class="sv-tap-next" onclick="nxStoryNext()"></div>
+    </div>
+    <div class="sv-caption" id="svCaption"></div>
+    <!-- Reply bar — shown for others' stories -->
+    <div class="sv-reply-bar" id="svReplyBar">
+      <div class="sv-reply-row">
+        <input type="text" id="svReplyInput" placeholder="Reply to this story…" maxlength="200"
+          oninput="nxStoryReplyTyping()"
+          onfocus="nxSvPauseForReply()"
+          onblur="nxSvResumeFromReply()"/>
+        <button class="sv-reply-send" id="svReplySendBtn" onclick="nxStorySendReply()" disabled aria-label="Send">➤</button>
+      </div>
+    </div>
+    <!-- Bottom bar: seen-by + swipe hint (own story only) -->
+    <div class="sv-bottom-bar" id="svBottomBar">
+      <div class="sv-swipe-hint" id="svSwipeHint">Swipe up for viewers</div>
+      <button class="sv-seen-btn" id="svSeenBtn" onclick="nxOpenSeenBy()">
+        <span class="sv-eye-ic">👁</span>
+        <span id="svSeenCount">0</span>
+      </button>
+    </div>
+    <!-- Seen-by slide-up panel -->
+    <div class="sv-seen-panel" id="svSeenPanel">
+      <div class="sv-seen-panel-inner">
+        <div class="sv-seen-drag"></div>
+        <div class="sv-seen-hdr">
+          <span class="sv-seen-title">Seen by</span>
+          <button class="sv-seen-close" onclick="nxCloseSeenBy()">✕</button>
+        </div>
+        <div class="sv-seen-list" id="svSeenList">
+          <div class="state-msg">Loading…</div>
+        </div>
+      </div>
+    </div>
+    <!-- All caught up screen (after last story) -->
+    <div class="sv-caught-up" id="svCaughtUp">
+      <div class="sv-caught-up-check">✓</div>
+      <div class="sv-caught-up-title">You're all caught up!</div>
+      <div class="sv-caught-up-sub">You've seen every story from your network.</div>
+      <button class="sv-caught-up-btn" onclick="nxCloseStoryViewer();nxSwitchTab('feed')">Go to Feed</button>
+    </div>
+  </div>
+
+  <!-- ── STORY COMPOSER ── -->
+  <div class="story-composer" id="storyComposer">
+    <div class="af-topbar">
+      <button class="af-back" onclick="nxCloseStoryComposer()">←</button>
+      <div class="af-topbar-title">Add Story</div>
+    </div>
+    <div class="sc-preview" id="scPreview">
+      <div class="sc-empty" id="scEmpty">
+        <div class="sc-empty-icon">📷</div>
+        <p>Pick a photo or video below</p>
+      </div>
+    </div>
+    <div class="sc-controls">
+      <div class="sc-pick-row">
+        <button class="sc-pick-btn" onclick="document.getElementById('scImageInput').click()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Photo
+        </button>
+        <button class="sc-pick-btn" onclick="document.getElementById('scVideoInput').click()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          Video
+        </button>
+      </div>
+      <input type="file" id="scImageInput" accept="image/*" class="hidden" onchange="nxHandleStoryMedia(this,'image')"/>
+      <input type="file" id="scVideoInput" accept="video/mp4,video/webm,video/quicktime" class="hidden" onchange="nxHandleStoryMedia(this,'video')"/>
+      <textarea class="sc-caption-inp" id="scCaption" placeholder="Add a caption (optional)…" rows="1" maxlength="200"></textarea>
+      <button class="af-btn-primary" id="scPostBtn" onclick="nxPostStory()" disabled style="width:100%;">Share Story</button>
+    </div>
+  </div>
+
+  <!-- ── POST COMPOSER MODAL (updated with image support) ── -->
+  <div class="modal-ov" id="composerModal" onclick="nxCloseComposer()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-drag"></div>
+      <div class="modal-head">
+        <div><h3>Create Post</h3><p>Share your thoughts</p></div>
+        <button class="modal-close" onclick="nxCloseComposer()">✕</button>
+      </div>
+      <div class="modal-body">
+        <textarea class="compose" id="postInput" rows="5" placeholder="Write something helpful, thoughtful, or interesting…" oninput="nxPostTyping()"></textarea>
+        <!-- Post image preview -->
+        <div id="postImagePreviewWrap" class="hidden" style="position:relative;display:inline-block;">
+          <img id="postImagePreview" style="max-height:120px;border-radius:10px;box-shadow:var(--sh);"/>
+          <button onclick="nxRemovePostImage()" style="position:absolute;top:-8px;right:-8px;background:var(--err);color:#fff;border-radius:50%;width:24px;height:24px;font-size:12px;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+        <div class="compose-foot">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button id="postAttachBtn" onclick="nxAttachPostImage()" style="color:var(--tm);font-size:22px;display:flex;align-items:center;" aria-label="Add image">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </button>
+            <input type="file" id="postImageInput" accept="image/*" class="hidden" onchange="nxHandlePostImage(this)"/>
+            <span id="postCount">0 / 80 words</span>
+          </div>
+          <button class="af-btn-primary" id="postSubmitBtn" onclick="nxCreatePost()" disabled>Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal-ov" id="commentsModal" onclick="nxCloseComments()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="height:85dvh;">
+      <div class="modal-drag"></div>
+      <div class="modal-head">
+        <div><h3>Comments</h3><p id="commentsPreview">Join the discussion</p></div>
+        <button class="modal-close" onclick="nxCloseComments()">✕</button>
+      </div>
+      <div class="comments-list" id="commentsList">
+        <div class="state-msg">Loading…</div>
+      </div>
+      <div class="comment-input-area">
+        <textarea class="compose" id="commentInput" rows="2" placeholder="Write a comment…" oninput="nxCommentTyping()" style="min-height:60px;"></textarea>
+        <div class="compose-foot">
+          <span id="commentCount">0 / 80 words</span>
+          <button class="af-btn-primary" style="height:38px;font-size:13px;" id="commentSubmitBtn" onclick="nxCreateComment()" disabled>Comment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-ov" id="replyModal" onclick="nxCloseReply()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-drag"></div>
+      <div class="modal-head">
+        <div><h3>Reply</h3><p id="replyTarget">Reply to comment</p></div>
+        <button class="modal-close" onclick="nxCloseReply()">✕</button>
+      </div>
+      <div class="modal-body">
+        <textarea class="compose" id="replyInput" rows="4" placeholder="Write your reply…" oninput="nxReplyTyping()"></textarea>
+        <div class="compose-foot">
+          <span id="replyCount">0 / 80 words</span>
+          <button class="af-btn-primary" id="replySubmitBtn" onclick="nxCreateReply()" disabled>Reply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-ov" id="reportModal" onclick="nxCloseReport()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-drag"></div>
+      <div class="modal-head">
+        <div><h3>Report Content</h3><p>Help keep the community safe</p></div>
+        <button class="modal-close" onclick="nxCloseReport()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;flex-direction:column;gap:8px;" id="reportOptions">
+          <button class="af-btn-secondary-outline" style="justify-content:flex-start;height:48px;" data-reason="Spam or self-promotion" onclick="nxSelectReport(this)">🚫 Spam or self-promotion</button>
+          <button class="af-btn-secondary-outline" style="justify-content:flex-start;height:48px;" data-reason="Harassment or bullying" onclick="nxSelectReport(this)">😠 Harassment or bullying</button>
+          <button class="af-btn-secondary-outline" style="justify-content:flex-start;height:48px;" data-reason="Hate speech or discrimination" onclick="nxSelectReport(this)">⚠️ Hate speech or discrimination</button>
+          <button class="af-btn-secondary-outline" style="justify-content:flex-start;height:48px;" data-reason="False information" onclick="nxSelectReport(this)">❌ False information</button>
+          <button class="af-btn-secondary-outline" style="justify-content:flex-start;height:48px;" data-reason="Other" onclick="nxSelectReport(this)">📝 Other</button>
+        </div>
+        <input type="text" class="field hidden" id="reportOtherInp" placeholder="Describe the issue…" maxlength="200"/>
+        <button class="af-btn-primary" style="background:var(--err);margin-top:10px;" id="reportSubmitBtn" onclick="nxSubmitReport()" disabled>Submit Report</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-ov" id="menuModal" onclick="nxCloseMenu()">
+    <div class="menu-sheet" onclick="event.stopPropagation()">
+      <div class="modal-drag"></div>
+      <div class="menu-label">Options</div>
+      <button id="menuPinBtn" class="pin-action hidden" onclick="nxTogglePin()">📌 Pin Post</button>
+      <button id="menuUnpinBtn" class="pin-action hidden" onclick="nxTogglePin()">📌 Unpin Post</button>
+      <button id="menuReportBtn" onclick="nxOpenReport()">🚩 Report</button>
+      <button id="menuEditBtn" style="display:none;" onclick="nxEditTarget()">✏️ Edit</button>
+      <button id="menuDeleteBtn" class="danger" style="display:none;" onclick="nxDeleteTarget()">🗑 Delete</button>
+      <button onclick="nxCloseMenu()">✕ Cancel</button>
+    </div>
+  </div>
+
+  <!-- Floating emoji reaction picker -->
+  <div class="emoji-picker-float" id="emojiPickerFloat">
+    <button onclick="nxSendReaction('❤️')">❤️</button>
+    <button onclick="nxSendReaction('👍')">👍</button>
+    <button onclick="nxSendReaction('😂')">😂</button>
+    <button onclick="nxSendReaction('😮')">😮</button>
+    <button onclick="nxSendReaction('😢')">😢</button>
+    <button onclick="nxSendReaction('🔥')">🔥</button>
+  </div>
+
+  <div class="modal-ov" id="dmOptionsModal" onclick="nxCloseDMOptions()">
+    <div class="menu-sheet" onclick="event.stopPropagation()">
+      <div class="modal-drag"></div>
+      <div class="menu-label">Chat Options</div>
+      <button id="dmBlockBtn" class="danger" onclick="nxBlockCurrentPeer()">🚫 Block User</button>
+      <button id="dmUnblockBtn" class="danger hidden" onclick="nxUnblockCurrentPeer()" style="color:var(--ok);">✅ Unblock User</button>
+      <button class="danger" onclick="nxOpenClearChatConfirm()">🗑 Clear Chat History</button>
+      <button onclick="nxCloseDMOptions()">✕ Cancel</button>
+    </div>
+  </div>
+
+  <div class="modal-ov" id="clearChatModal" onclick="nxCloseClearChatConfirm()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-drag"></div>
+      <div class="modal-head">
+        <div><h3>Clear Chat History</h3><p>This cannot be undone</p></div>
+        <button class="modal-close" onclick="nxCloseClearChatConfirm()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:14px;color:var(--t2);line-height:1.6;">
+          This will clear the chat history for you. 
+          <strong id="clearChatPeerName" style="color:var(--t1);"></strong> will still be able to see these messages.
+        </p>
+        <button class="af-btn-primary" style="background:var(--err);margin-top:4px;" id="clearChatConfirmBtn" onclick="nxConfirmClearChat()">Clear for me</button>
+        <button class="af-btn-secondary-outline" onclick="nxCloseClearChatConfirm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-ov" id="mainMenuModal" onclick="nxCloseMainMenu()">
+    <div class="menu-sheet" onclick="event.stopPropagation()">
+      <div class="modal-drag"></div>
+      <div class="menu-label">Settings</div>
+      <button onclick="nxOpenBlockedUsers()">🚫 Blocked Users</button>
+      <button onclick="nxOpenEditProfile();nxCloseMainMenu();">✏️ Edit Profile</button>
+      <button onclick="nxCloseMainMenu()">✕ Cancel</button>
+    </div>
+  </div>
+
+  <div class="modal-ov" id="blockListModal" onclick="nxCloseBlockedUsers()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="max-height:80dvh;">
+      <div class="modal-drag"></div>
+      <div class="modal-head">
+        <div><h3>Blocked Users</h3><p>Manage your blocklist</p></div>
+        <button class="modal-close" onclick="nxCloseBlockedUsers()">✕</button>
+      </div>
+      <div class="modal-body" id="blockListBody" style="padding:0;gap:0;"></div>
+    </div>
+  </div>
+
+ <nav class="af-bnav" id="bnav" aria-label="Primary navigation">
+      <button class="af-nav-btn active" onclick="nxNavTo('feed')" id="nav-feed" aria-label="Feed">
+        <span class="af-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
+        <span class="af-nav-label">Feed</span>
+      </button>
+      <button class="af-nav-btn" onclick="nxNavTo('search')" id="nav-search" aria-label="Search">
+        <span class="af-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg></span>
+        <span class="af-nav-label">Search</span>
+      </button>
+      <button class="af-nav-btn af-nav-compose" onclick="nxNavTo('post')" id="nav-post" aria-label="Write post">
+        <span class="af-nav-icon">+</span>
+        <span class="af-nav-label">Post</span>
+      </button>
+      <button class="af-nav-btn" onclick="nxNavTo('chats')" id="nav-chats" aria-label="Chats">
+        <span class="af-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg></span>
+        <span class="af-nav-label">Chats</span>
+      </button>
+      <button class="af-nav-btn" onclick="nxNavTo('profile')" id="nav-profile" aria-label="Profile">
+        <span class="af-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+        <span class="af-nav-label">Profile</span>
+      </button>
+    </nav>
+
+  <div class="af-toast-wrap" id="toastWrap"></div>
+<!-- ── NO MUTUAL FOLLOW MODAL ── -->
+  <div id="noMutualFollowModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);">
+    <div style="background:var(--card);border-radius:20px;padding:28px 24px;max-width:340px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3);">
+      <div style="font-size:40px;margin-bottom:12px;">🔒</div>
+      <div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:8px;">Messaging Restricted</div>
+      <div id="noMutualFollowMsg" style="font-size:14px;color:var(--t2);line-height:1.5;margin-bottom:20px;">You need to follow each other to send messages. Follow them first — once they follow you back, DMs will be unlocked.</div>
+      <button class="af-btn-primary" style="width:100%;margin-bottom:10px;" onclick="nxCloseNoMutualFollowModal()">Got it</button>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/app/01-core.js"></script>
+<script src="assets/js/app/02-stories.js"></script>
+<script src="assets/js/app/03-tabs-init.js"></script>
+<script src="assets/js/app/04-compose-feed.js"></script>
+<script src="assets/js/app/05-search-profile.js"></script>
+<script src="assets/js/app/06-messaging.js"></script>
+<script src="assets/js/app/07-exports-lightbox.js"></script>
+<script src="assets/js/nav.js"></script>
+</body>
+</html>
