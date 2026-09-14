@@ -400,7 +400,7 @@
             <i class="fa-regular fa-envelope text-amber-400 text-sm"></i>
             <div>
               <span class="text-white font-semibold block leading-none">Order Sent to Kitchen Email</span>
-              <span class="text-[10px] text-slate-400">academeforge@gmail.com</span>
+              <span class="text-[10px] text-slate-400">noreply.academeforge@gmail.com</span>
             </div>
           </div>
           <button onclick="app.triggerDirectEmailFallback()" class="px-2 py-1 rounded bg-slate-800 text-[10px] text-slate-300 hover:text-white">
@@ -587,7 +587,7 @@
      * NIGHT BITES - Application Logic & State Engine
      */
     const CONFIG = {
-      defaultEmail: 'academeforge@gmail.com',
+      defaultEmail: 'noreply.academeforge@gmail.com',
       serviceCharge: 20,
       adminPin: '1122',
       defaultUpiId: 'nightbites@slc',
@@ -1081,7 +1081,7 @@
         this.saveOrders();
         this.lastCreatedOrder = newOrder;
 
-        // Trigger Automated Email to academeforge@gmail.com
+        // Trigger Automated Email to noreply.academeforge@gmail.com
         this.sendOrderEmailNotification(newOrder);
 
         // Populate Token Screen
@@ -1176,7 +1176,7 @@ ${order.specialInstructions}
 Order Time:
 ${order.dateString}`;
 
-        // Asynchronous client-side HTTP dispatch to FormSubmit endpoint configured for academeforge@gmail.com
+        // Asynchronous client-side HTTP dispatch to FormSubmit endpoint configured for noreply.academeforge@gmail.com
         fetch(`https://formsubmit.co/ajax/${CONFIG.defaultEmail}`, {
           method: 'POST',
           headers: {
