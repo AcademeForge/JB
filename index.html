@@ -71,6 +71,12 @@
 </head>
 <body class="bg-night-950 text-slate-100 min-h-screen font-sans flex flex-col antialiased selection:bg-amber-500 selection:text-black">
 
+  <!-- Customer Care Top Bar -->
+  <a href="tel:+919801299593" class="block sticky top-0 z-50 bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 text-center py-1.5 px-3 text-xs font-bold tracking-wide">
+    <i class="fa-solid fa-headset mr-1.5"></i>
+    Customer Care: <span class="underline underline-offset-2">+91 98012 99593</span>
+  </a>
+
   <!-- Top Navigation Bar -->
   <header class="sticky top-0 z-40 bg-night-950/90 backdrop-blur-md border-b border-slate-800/80 px-4 py-3 transition-all">
     <div class="max-w-md mx-auto flex items-center justify-between">
@@ -92,11 +98,6 @@
         <button onclick="app.toggleHoursModal()" id="hoursStatusBadge" class="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 hover:bg-emerald-900/50 transition">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
           <span id="hoursStatusText">11PM - 3AM</span>
-        </button>
-
-        <!-- Admin Portal Entry -->
-        <button onclick="app.openAdminModal()" class="w-9 h-9 rounded-xl bg-slate-800/70 border border-slate-700/60 text-slate-300 hover:text-amber-400 flex items-center justify-center transition active:scale-95" title="Admin Panel">
-          <i class="fa-solid fa-shield-halved text-sm"></i>
         </button>
       </div>
     </div>
@@ -337,6 +338,7 @@
           <p>1. Pay the exact calculated amount via your UPI App.</p>
           <p>2. Tap <strong>"I'VE PAID"</strong> below to generate your unique room order token.</p>
           <p>3. <strong>Payment is NOT automatic.</strong> Our team will manually verify the payment screenshot on WhatsApp before preparing your order.</p>
+          <p>4. <strong>You must send your token number, order details & payment screenshot on WhatsApp.</strong> If not sent, your order will be treated as invalid.</p>
         </div>
 
         <!-- I've Paid Action Button -->
@@ -394,6 +396,12 @@
           <span>Send Token & Screenshot on WhatsApp</span>
         </button>
 
+        <!-- Order Invalid Warning -->
+        <div class="p-2.5 rounded-xl bg-rose-950/40 border border-rose-800/60 text-[11px] text-rose-300 flex items-start gap-2 mb-4 text-left">
+          <i class="fa-solid fa-circle-exclamation mt-0.5"></i>
+          <span><strong>Important:</strong> If you do not send your order details and token number on WhatsApp, your order will be considered <strong>invalid</strong> and will not be prepared or delivered.</span>
+        </div>
+
         <!-- Email Notification Status Banner -->
         <div id="emailNotificationBadge" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400 flex items-center justify-between mb-4">
           <div class="flex items-center gap-2 text-left">
@@ -429,78 +437,6 @@
       </div>
     </section>
 
-    <!-- VIEW: ADMIN DASHBOARD (Protected by PIN) -->
-    <section id="viewAdmin" class="hidden">
-      <div class="flex items-center justify-between mb-4">
-        <button onclick="app.navigateTo('home')" class="text-xs font-semibold text-slate-400 hover:text-amber-400 flex items-center gap-1.5 py-1">
-          <i class="fa-solid fa-arrow-left"></i> Back to Storefront
-        </button>
-        <span class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1">
-          <i class="fa-solid fa-lock"></i> Kitchen Operations
-        </span>
-      </div>
-
-      <!-- Quick Admin Controls Card -->
-      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 mb-5 shadow-xl space-y-3">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-sm font-black text-white">Live Controls</h3>
-            <p class="text-[11px] text-slate-400">Manage high rush, store hours & UPI details</p>
-          </div>
-          <button onclick="app.refreshAdminOrders()" class="p-2 text-slate-400 hover:text-white text-xs">
-            <i class="fa-solid fa-rotate-right"></i> Refresh
-          </button>
-        </div>
-
-        <!-- High Demand Toggle -->
-        <div class="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between">
-          <div>
-            <span class="text-xs font-bold text-white block">🔥 High Demand Mode</span>
-            <span class="text-[10px] text-slate-400">Shows rush warning to students</span>
-          </div>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="adminHighDemandToggle" onchange="app.toggleHighDemand(this.checked)" class="sr-only peer">
-            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-          </label>
-        </div>
-
-        <!-- Store Open / Closed Override -->
-        <div class="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between">
-          <div>
-            <span class="text-xs font-bold text-white block">🌙 Kitchen Ordering Open</span>
-            <span class="text-[10px] text-slate-400">Bypasses midnight schedule restriction</span>
-          </div>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="adminStoreOpenToggle" onchange="app.toggleStoreForceOpen(this.checked)" class="sr-only peer">
-            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-          </label>
-        </div>
-
-        <!-- Configurable UPI & WhatsApp Modal trigger -->
-        <div class="grid grid-cols-2 gap-2 pt-1">
-          <button onclick="app.promptEditUpi()" class="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 border border-slate-700 flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-qrcode text-amber-400"></i> Edit UPI QR / ID
-          </button>
-          <button onclick="app.promptEditWhatsApp()" class="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 border border-slate-700 flex items-center justify-center gap-1.5">
-            <i class="fa-brands fa-whatsapp text-emerald-400"></i> Edit Phone No.
-          </button>
-        </div>
-      </div>
-
-      <!-- Live Order Queue Header -->
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <span>Active Orders Queue</span>
-          <span id="adminOrdersCountBadge" class="bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full text-[10px] font-black">0</span>
-        </h3>
-        <span class="text-[10px] text-slate-400 font-mono">Realtime Live</span>
-      </div>
-
-      <!-- Admin Order Cards -->
-      <div id="adminOrdersList" class="space-y-3">
-        <!-- Injected dynamically -->
-      </div>
-    </section>
   </main>
 
   <!-- Fixed Floating Mobile Bottom Bar -->
@@ -525,25 +461,6 @@
         <span>Checkout</span>
         <i class="fa-solid fa-arrow-right text-[10px]"></i>
       </button>
-    </div>
-  </div>
-
-  <!-- Modal: Admin PIN Access -->
-  <div id="adminPinModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
-      <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl mx-auto mb-3">
-        <i class="fa-solid fa-key"></i>
-      </div>
-      <h3 class="text-base font-black text-white mb-1">Kitchen Team Login</h3>
-      <p class="text-xs text-slate-400 mb-4">Enter team PIN to access incoming orders</p>
-      
-      <input type="password" id="adminPinInput" maxlength="6" placeholder="Enter PIN (Default: 1122)" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl py-2.5 px-3 text-center text-sm font-mono text-white mb-4 outline-none">
-      
-      <div class="grid grid-cols-2 gap-2">
-        <button onclick="app.closeAdminModal()" class="py-2 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300 hover:bg-slate-700">Cancel</button>
-        <button onclick="app.verifyAdminPin()" class="py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-bold hover:bg-amber-400">Unlock</button>
-      </div>
-      <p class="text-[10px] text-slate-500 mt-3">Demo default PIN is <span class="font-mono text-amber-400 font-bold">1122</span></p>
     </div>
   </div>
 
@@ -589,7 +506,6 @@
     const CONFIG = {
       defaultEmail: 'noreply.academeforge@gmail.com',
       serviceCharge: 20,
-      adminPin: '1122',
       defaultUpiId: 'nightbites@slc',
       defaultWhatsApp: '9801299593',
       startHour: 23, // 11:00 PM
@@ -685,7 +601,7 @@
         this.activeCategory = 'all';
         this.currentView = 'home';
         this.isHighDemand = false;
-        this.forceStoreOpen = true; // Enabled by default for easy demo testing
+        this.forceStoreOpen = false;
         this.upiId = CONFIG.defaultUpiId;
         this.whatsappNumber = CONFIG.defaultWhatsApp;
         this.lastCreatedOrder = null;
@@ -698,7 +614,6 @@
         this.renderProducts();
         this.updateCartUI();
         this.checkOperatingHours();
-        this.renderAdminOrders();
       }
 
       loadStorage() {
@@ -712,13 +627,7 @@
           const savedWa = localStorage.getItem('nb_wa');
           if (savedWa) this.whatsappNumber = savedWa;
 
-          const savedHighDemand = localStorage.getItem('nb_high_demand');
-          if (savedHighDemand) this.isHighDemand = JSON.parse(savedHighDemand);
-          
           document.getElementById('displayUpiId').textContent = this.upiId;
-          document.getElementById('adminHighDemandToggle').checked = this.isHighDemand;
-          document.getElementById('adminStoreOpenToggle').checked = this.forceStoreOpen;
-          this.applyHighDemandBanner();
         } catch (e) {
           console.warn('Storage sync initialized locally.');
         }
@@ -732,7 +641,7 @@
 
       navigateTo(viewName) {
         this.currentView = viewName;
-        const views = ['viewHome', 'viewCart', 'viewPayment', 'viewToken', 'viewAdmin', 'viewClosed'];
+        const views = ['viewHome', 'viewCart', 'viewPayment', 'viewToken', 'viewClosed'];
         views.forEach(v => {
           const el = document.getElementById(v);
           if (el) el.classList.add('hidden');
@@ -741,8 +650,7 @@
         const target = document.getElementById(viewName === 'home' ? 'viewHome' : 
                                (viewName === 'cart' ? 'viewCart' : 
                                (viewName === 'payment' ? 'viewPayment' : 
-                               (viewName === 'token' ? 'viewToken' : 
-                               (viewName === 'admin' ? 'viewAdmin' : 'viewClosed')))));
+                               (viewName === 'token' ? 'viewToken' : 'viewClosed'))));
         if (target) target.classList.remove('hidden');
 
         // Sticky cart bar visibility
@@ -758,16 +666,16 @@
       }
 
       checkOperatingHours() {
-        if (this.forceStoreOpen) {
-          document.getElementById('hoursStatusText').textContent = 'OPEN (11PM-3AM)';
-          document.getElementById('hoursStatusBadge').className = 'flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 hover:bg-emerald-900/50 transition';
-          return true;
-        }
-
         const now = new Date();
         const hour = now.getHours();
         // 11:00 PM (23) to 3:00 AM (0, 1, 2)
-        const isOpen = (hour >= CONFIG.startHour || hour < CONFIG.endHour);
+        const withinNightWindow = (hour >= CONFIG.startHour || hour < CONFIG.endHour);
+
+        // High Demand Mode is always ON automatically during the 11 PM - 3 AM rush window
+        this.isHighDemand = withinNightWindow;
+        this.applyHighDemandBanner();
+
+        const isOpen = this.forceStoreOpen || withinNightWindow;
 
         if (!isOpen) {
           this.navigateTo('closed');
@@ -775,13 +683,14 @@
           document.getElementById('hoursStatusBadge').className = 'flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-950/60 text-rose-400 border border-rose-800/60 hover:bg-rose-900/50 transition';
           return false;
         }
+
+        document.getElementById('hoursStatusText').textContent = 'OPEN (11PM-3AM)';
+        document.getElementById('hoursStatusBadge').className = 'flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 hover:bg-emerald-900/50 transition';
         return true;
       }
 
       bypassClosedForDemo() {
-        this.forceStoreOpen = true;
-        document.getElementById('adminStoreOpenToggle').checked = true;
-        this.showToast('Kitchen test mode active! Store is open.');
+        this.showToast('Menu preview mode — ordering opens at 11 PM.');
         this.navigateTo('home');
       }
 
@@ -1101,7 +1010,6 @@
         this.cart = {};
         this.updateCartUI();
         this.renderProducts();
-        this.renderAdminOrders();
 
         this.navigateTo('token');
       }
@@ -1125,8 +1033,10 @@
       launchWhatsApp() {
         if (!this.lastCreatedOrder) return;
         const order = this.lastCreatedOrder;
-        
-        const message = `Night Bites Order\n\nToken: ${order.token}\nRoom: ${order.roomNumber}\nAmount: ₹${order.totalAmount}\n\nPayment screenshot attached.`;
+
+        const itemsText = order.items.map(item => `- ${item.name} × ${item.quantity} = ₹${item.total}`).join('\n');
+
+        const message = `Night Bites Order\n\nToken: ${order.token}\nName: ${order.studentName}\nHostel/Block: ${order.hostelBlock}\nRoom: ${order.roomNumber}\n\nItems Ordered:\n${itemsText}\n\nFood Total: ₹${order.foodTotal}\nService Charge: ₹${order.serviceCharge}\nAmount Paid: ₹${order.totalAmount}\n\n(Payment screenshot attached)`;
         const encoded = encodeURIComponent(message);
         const waUrl = `https://wa.me/${this.whatsappNumber}?text=${encoded}`;
         
@@ -1220,37 +1130,6 @@ ${order.dateString}`;
         this.navigateTo('home');
       }
 
-      openAdminModal() {
-        document.getElementById('adminPinModal').classList.remove('hidden');
-        document.getElementById('adminPinInput').value = '';
-        document.getElementById('adminPinInput').focus();
-      }
-
-      closeAdminModal() {
-        document.getElementById('adminPinModal').classList.add('hidden');
-      }
-
-      verifyAdminPin() {
-        const pin = document.getElementById('adminPinInput').value.trim();
-        if (pin === CONFIG.adminPin) {
-          this.closeAdminModal();
-          this.showToast('Kitchen Dashboard Unlocked');
-          this.renderAdminOrders();
-          this.navigateTo('admin');
-        } else {
-          this.showToast('Invalid PIN. Use default 1122');
-        }
-      }
-
-      toggleHighDemand(enabled) {
-        this.isHighDemand = enabled;
-        try {
-          localStorage.setItem('nb_high_demand', JSON.stringify(enabled));
-        } catch (e) {}
-        this.applyHighDemandBanner();
-        this.showToast(enabled ? 'High Demand Mode Activated' : 'Normal Demand Restored');
-      }
-
       applyHighDemandBanner() {
         const banner = document.getElementById('highDemandBanner');
         if (this.isHighDemand) {
@@ -1258,165 +1137,6 @@ ${order.dateString}`;
         } else {
           banner.classList.add('hidden');
         }
-      }
-
-      toggleStoreForceOpen(enabled) {
-        this.forceStoreOpen = enabled;
-        this.checkOperatingHours();
-        this.showToast(enabled ? 'Store schedule set to OPEN' : 'Reverted to night hours check');
-      }
-
-      promptEditUpi() {
-        const current = this.upiId;
-        const newUpi = prompt('Enter team UPI ID for QR code:', current);
-        if (newUpi && newUpi.trim()) {
-          this.upiId = newUpi.trim();
-          localStorage.setItem('nb_upi', this.upiId);
-          document.getElementById('displayUpiId').textContent = this.upiId;
-          this.showToast(`UPI ID updated to ${this.upiId}`);
-        }
-      }
-
-      promptEditWhatsApp() {
-        const current = this.whatsappNumber;
-        const newWa = prompt('Enter team WhatsApp Number with country code (e.g. 919876543210):', current);
-        if (newWa && newWa.trim()) {
-          this.whatsappNumber = newWa.trim();
-          localStorage.setItem('nb_wa', this.whatsappNumber);
-          this.showToast(`WhatsApp updated to ${this.whatsappNumber}`);
-        }
-      }
-
-      refreshAdminOrders() {
-        this.loadStorage();
-        this.renderAdminOrders();
-        this.showToast('Orders refreshed');
-      }
-
-      updateOrderStatus(token, newPaymentStatus, newOrderStatus) {
-        const order = this.orders.find(o => o.token === token);
-        if (!order) return;
-
-        if (newPaymentStatus) order.paymentStatus = newPaymentStatus;
-        if (newOrderStatus) order.orderStatus = newOrderStatus;
-
-        this.saveOrders();
-        this.renderAdminOrders();
-        this.showToast(`Order ${token} updated to ${newOrderStatus || newPaymentStatus}`);
-      }
-
-      renderAdminOrders() {
-        const container = document.getElementById('adminOrdersList');
-        const countBadge = document.getElementById('adminOrdersCountBadge');
-        if (!container) return;
-
-        countBadge.textContent = this.orders.length;
-
-        if (this.orders.length === 0) {
-          container.innerHTML = `
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center text-slate-500 text-xs">
-              <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-700 block"></i>
-              No orders received yet tonight. Incoming orders will show up here in real time!
-            </div>
-          `;
-          return;
-        }
-
-        container.innerHTML = this.orders.map(order => {
-          const isVerified = order.paymentStatus === 'VERIFIED';
-          const isPending = order.paymentStatus.includes('PENDING');
-
-          return `
-            <div class="bg-slate-900 border ${isVerified ? 'border-emerald-800/80' : 'border-amber-800/80'} rounded-2xl p-4 space-y-3 shadow-lg">
-              
-              <!-- Card Header -->
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="flex items-center gap-2">
-                    <span class="font-mono text-base font-black text-amber-400">${order.token}</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${isVerified ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}">
-                      ${isVerified ? '🟢 VERIFIED' : '🟡 PAYMENT PENDING'}
-                    </span>
-                  </div>
-                  <p class="text-xs text-white font-bold mt-1">${order.studentName} • <span class="text-amber-300 font-mono">Room ${order.roomNumber}</span></p>
-                  <p class="text-[11px] text-slate-400">${order.hostelBlock} • WA: <a href="https://wa.me/91${order.whatsappNumber}" target="_blank" class="text-emerald-400 underline">${order.whatsappNumber}</a></p>
-                </div>
-                <div class="text-right">
-                  <span class="text-base font-mono font-black text-white">₹${order.totalAmount}</span>
-                  <span class="block text-[10px] text-slate-400">${order.createdAt}</span>
-                </div>
-              </div>
-
-              <!-- Ordered Items List -->
-              <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 text-xs space-y-1 font-mono">
-                ${order.items.map(item => `
-                  <div class="flex justify-between text-slate-300">
-                    <span>${item.name} × ${item.quantity}</span>
-                    <span>₹${item.total}</span>
-                  </div>
-                `).join('')}
-                ${order.specialInstructions && order.specialInstructions !== 'None' ? `
-                  <div class="pt-1.5 mt-1.5 border-t border-slate-800 text-[11px] text-amber-300/90 font-sans">
-                    <strong>Note:</strong> ${order.specialInstructions}
-                  </div>
-                ` : ''}
-              </div>
-
-              <!-- Status Badge -->
-              <div class="flex items-center justify-between text-xs pt-1">
-                <span class="text-slate-400">Order Stage:</span>
-                <span class="font-bold text-amber-400 uppercase tracking-wider text-[11px] bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
-                  ${order.orderStatus}
-                </span>
-              </div>
-
-              <!-- Admin Action Buttons Based on Status -->
-              <div class="pt-2 border-t border-slate-800 flex flex-wrap gap-2">
-                ${isPending ? `
-                  <button onclick="app.updateOrderStatus('${order.token}', 'VERIFIED', 'ACCEPTED')" class="flex-1 py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1 shadow">
-                    <i class="fa-solid fa-check"></i> Verify Payment
-                  </button>
-                  <button onclick="app.updateOrderStatus('${order.token}', 'REJECTED', 'CANCELLED')" class="py-2 px-3 rounded-xl bg-rose-950 hover:bg-rose-900 border border-rose-800 text-rose-300 font-bold text-xs transition">
-                    Reject
-                  </button>
-                ` : `
-                  ${order.orderStatus === 'ACCEPTED' ? `
-                    <button onclick="app.updateOrderStatus('${order.token}', null, 'PREPARING')" class="flex-1 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs">
-                      🔥 Start Preparing
-                    </button>
-                    <button onclick="app.updateOrderStatus('${order.token}', null, 'OUT FOR DELIVERY')" class="flex-1 py-2 rounded-xl bg-sky-600 text-white font-bold text-xs">
-                      ⚡ Skip to Delivery
-                    </button>
-                  ` : ''}
-
-                  ${order.orderStatus === 'PREPARING' ? `
-                    <button onclick="app.updateOrderStatus('${order.token}', null, 'READY')" class="flex-1 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs">
-                      🍽️ Mark as Ready
-                    </button>
-                  ` : ''}
-
-                  ${order.orderStatus === 'READY' ? `
-                    <button onclick="app.updateOrderStatus('${order.token}', null, 'OUT FOR DELIVERY')" class="flex-1 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs">
-                      🚀 Out for Delivery
-                    </button>
-                  ` : ''}
-
-                  ${order.orderStatus === 'OUT FOR DELIVERY' ? `
-                    <button onclick="app.updateOrderStatus('${order.token}', null, 'DELIVERED')" class="flex-1 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs">
-                      ✅ Mark Delivered
-                    </button>
-                  ` : ''}
-
-                  ${order.orderStatus === 'DELIVERED' ? `
-                    <span class="w-full text-center py-1 text-xs text-emerald-400 font-bold bg-emerald-950/40 rounded-xl border border-emerald-900">
-                      Completed & Delivered to Room
-                    </span>
-                  ` : ''}
-                `}
-              </div>
-            </div>
-          `;
-        }).join('');
       }
 
       showToast(msg) {
