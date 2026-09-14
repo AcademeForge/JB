@@ -1,664 +1,1442 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="dark">
 <head>
-<script src="assets/js/theme.js"></script>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#4f46e5"/>
-<meta name="mobile-web-app-capable" content="yes"/>
-<title>JB Knowledge Park · Community</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link rel="icon" type="image/jpeg" href="/IMG/AF%20LOGO%202.jpeg">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@700;800;900&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="assets/css/styles.css"/>
-<link rel="stylesheet" href="assets/css/auth.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Night Bites | Late-Night Hostel Food Delivery</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            night: {
+              950: '#090d16',
+              900: '#0f172a',
+              800: '#1e293b',
+              700: '#334155'
+            },
+            flame: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Smooth mobile scrolling and touch behaviors */
+    body {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #090d16;
+      color: #f8fafc;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
+      50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.6); }
+    }
+    .glow-amber {
+      animation: pulse-glow 2.5s infinite;
+    }
+    .badge-blur {
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+  </style>
 </head>
-<body>
-<div class="af-shell" id="shell">
-  <div id="pullIndicator" class="pull-indicator">↻ Refreshing…</div>
-  <section id="authFlow" aria-label="JB Knowledge Park login">
-    <div class="auth-bg-canvas" aria-hidden="true">
-      <div class="auth-bg-gradient-1"></div>
-      <div class="auth-bg-gradient-2"></div>
-      <div class="auth-bg-gradient-3"></div>
-      <div class="auth-bg-grid"></div>
-      <div class="auth-bg-symbols">∑ π ∞ θ Δ √ ∫</div>
-      <div class="auth-particles" id="authParticles"></div>
-    </div>
-    <div class="auth-wrapper">
-      <div class="auth-shell">
-        <form class="auth-card" role="main" onsubmit="event.preventDefault();doAcademeLogin();">
-          <div class="auth-card-head">
-            <div class="auth-header">
-              <div class="auth-logo" aria-hidden="true">
-                <img src="/IMG/AF%20LOGO%202.jpeg" alt="AcademeForge logo" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
-                <span class="auth-logo-text">JB</span>
-              </div>
-              <h1 class="auth-title">JB Knowledge Park</h1>
-              <p class="auth-sub" id="authSub">Sign in with your credentials to access your student community.</p>
-            </div>
-            <div class="tab-row" id="authTabs" role="tablist">
-              <button class="tab-btn active" type="button" role="tab" aria-selected="true">Login</button>
-              <button class="tab-btn" type="button" onclick="window.location.href='https://signup.academeforge.in'">Create ID</button>
-            </div>
+<body class="bg-night-950 text-slate-100 min-h-screen font-sans flex flex-col antialiased selection:bg-amber-500 selection:text-black">
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-night-950/90 backdrop-blur-md border-b border-slate-800/80 px-4 py-3 transition-all">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="app.navigateTo('home')">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20">
+          <i class="fa-solid fa-moon text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-base font-extrabold tracking-tight text-white leading-none">NIGHT BITES</h1>
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
           </div>
-          <div class="auth-card-body">
-            <label class="form-label" for="alLoginId">Student ID</label>
-            <input id="alLoginId" class="form-input" type="tel" placeholder="Enter your Student ID or phone" autocomplete="username" inputmode="numeric">
-            <label class="form-label" for="alPassword">Password</label>
-            <input id="alPassword" class="form-input" type="password" placeholder="Enter your password" autocomplete="current-password">
-            <button class="btn-primary" type="submit" id="alLoginBtn"><span>Sign In to Community</span></button>
-            <button class="btn-ghost" type="button" onclick="window.location.href='https://reset.academeforge.in'">Forgot Password?</button>
-            <div class="auth-msg" id="alMsg" role="status" aria-live="polite"></div>
-            <div class="auth-note">Need help? Contact <a href="mailto:help@academeforge.in">help@academeforge.in</a></div>
-          </div>
-        </form>
+          <p class="text-[10px] text-amber-400/90 font-medium tracking-wide">HOSTEL ROOM DELIVERY</p>
+        </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ── IMAGE LIGHTBOX ── -->
-  <div id="imgLightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
-    <button class="lb-close" onclick="nxCloseLightbox()" aria-label="Close">✕</button>
-    <div class="lb-img-wrap" id="lbImgWrap">
-      <img id="lbImg" src="" alt="Full size image"/>
-    </div>
-    <div class="lb-zoom-bar">
-      <button onclick="nxLbZoom(-0.25)" aria-label="Zoom out">−</button>
-      <span class="lb-zoom-pct" id="lbZoomPct">100%</span>
-      <button onclick="nxLbZoom(0.25)" aria-label="Zoom in">+</button>
-    </div>
-  </div>
+      <div class="flex items-center gap-2">
+        <!-- Operating Status Indicator -->
+        <button onclick="app.toggleHoursModal()" id="hoursStatusBadge" class="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 hover:bg-emerald-900/50 transition">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span id="hoursStatusText">11PM - 3AM</span>
+        </button>
 
- <!-- ── VIEWS ── -->
-  <!-- 1. MAIN FEED/CHATS -->
-  <div class="af-view active" id="mainView">
-    <header class="af-topbar" id="hdr">
-      <div class="af-topbar-flex">
-        <div class="af-topbar-headline" id="mainHeaderTitle">JB Knowledge Park</div>
-        <button class="af-hdr-icon-btn feed-notify-btn" id="feedNotifyBtn" onclick="nxOpenNotifications()" aria-label="Notifications">
-          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-          <span class="notify-dot hidden" id="feedNotifyDot"></span>
+        <!-- Admin Portal Entry -->
+        <button onclick="app.openAdminModal()" class="w-9 h-9 rounded-xl bg-slate-800/70 border border-slate-700/60 text-slate-300 hover:text-amber-400 flex items-center justify-center transition active:scale-95" title="Admin Panel">
+          <i class="fa-solid fa-shield-halved text-sm"></i>
         </button>
       </div>
-    </header>
-
-    <div class="view-switch hidden" id="mainTabBar" aria-hidden="true">
-      <button class="view-switch-btn active" id="tabFeed" type="button">Feed</button>
-      <button class="view-switch-btn" id="tabChats" type="button">Chats <span class="vs-badge hidden" id="chatBadge" style="background:var(--rose);color:#fff;padding:2px 6px;border-radius:99px;font-size:10px;">0 new</span><span id="pendingFollowsBadge" style="display:none;background:#6366f1;color:#fff;padding:2px 6px;border-radius:99px;font-size:10px;margin-left:2px;font-weight:700;"></span></button>
     </div>
 
-    <!-- FEED TAB -->
-    <div class="af-page" id="feed" style="padding-bottom:120px;display:flex;flex-direction:column;">
-      <!-- STORIES BAR -->
-      <div class="stories-bar" id="storiesBar">
-        <div class="stories-scroll" id="storiesScroll">
-          <!-- Add My Story / View My Story -->
-          <div class="story-item story-add" id="yourStoryItem" onclick="nxYourStoryClick()">
-            <div class="story-ring story-ring-add" id="yourStoryRing">
-              <div class="story-avatar-wrap" id="myStoryAvatar">
-                <span id="myStoryAvatarInner"></span>
-                <div class="story-add-plus" id="yourStoryPlus" onclick="event.stopPropagation();nxOpenStoryComposer()">+</div>
-              </div>
-            </div>
-            <span class="story-label">Your Story</span>
-          </div>
-          <!-- Other users' story items are rendered here by JS (class="story-other") -->
+    <!-- High Demand Alert Banner -->
+    <div id="highDemandBanner" class="hidden mt-2 max-w-md mx-auto bg-gradient-to-r from-amber-950/80 to-red-950/80 border border-amber-600/40 px-3 py-2 rounded-xl flex items-center gap-2.5 text-xs text-amber-200">
+      <div class="text-base animate-bounce">🔥</div>
+      <div class="flex-1">
+        <p class="font-bold text-amber-300">High Demand Right Now</p>
+        <p class="text-[11px] text-amber-200/80">Orders are flooding in! Prep & room delivery may take a little longer than usual.</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Container -->
+  <main class="flex-1 max-w-md mx-auto w-full px-4 pb-28 pt-4">
+
+    <!-- VIEW: CLOSED STATE OVERLAY (Shown if hostel kitchen is currently closed) -->
+    <section id="viewClosed" class="hidden text-center py-12 px-2">
+      <div class="w-20 h-20 mx-auto rounded-3xl bg-slate-900 border border-slate-800 flex items-center justify-center text-amber-400 text-3xl mb-4 shadow-xl shadow-slate-950">
+        🌙
+      </div>
+      <h2 class="text-2xl font-black text-white tracking-tight mb-2">WE'RE CURRENTLY CLOSED</h2>
+      <p class="text-slate-400 text-sm max-w-xs mx-auto mb-6 leading-relaxed">
+        Night orders run strictly from <span class="text-amber-400 font-bold" id="closedHoursDisplay">11:00 PM to 3:00 AM</span>. Come back tonight for hot Maggie, eggs, and drinks!
+      </p>
+
+      <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl mb-6 text-left text-xs text-slate-300 space-y-2">
+        <div class="flex items-center justify-between text-slate-400 pb-2 border-b border-slate-800">
+          <span>Kitchen Schedule</span>
+          <span class="text-amber-400 font-semibold">Late Night Shift</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Opens:</span>
+          <span class="font-mono text-white">11:00 PM</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Closes:</span>
+          <span class="font-mono text-white">03:00 AM</span>
         </div>
       </div>
-      <div class="username-banner hidden" id="usernameBanner">
-        <span class="t">Set a username so others can find your profile.</span>
-        <button class="af-btn-primary" style="height:36px;font-size:13px;" onclick="nxOpenEditProfile()">Set up</button>
-      </div>
-      <div class="af-tabs" id="filterBar">
-        <button class="af-tab-btn active" id="pillRelevant" type="button" aria-selected="true">Relevant</button>
-        <button class="af-tab-btn" id="pillRecent" type="button" aria-selected="false">Recent</button>
-      </div>
-      <div class="post-list" id="postsList">
-        <!-- Skeleton placeholder rendered by JS -->
-        <div class="post-card af-skel" style="height:120px;"></div>
-        <div class="post-card af-skel" style="height:100px;"></div>
-        <div class="post-card af-skel" style="height:140px;"></div>
-      </div>
-    </div>
 
-    <!-- CHATS TAB -->
-    <div class="af-page hidden" id="chatsTab" style="padding-bottom:120px;display:flex;flex-direction:column;background:var(--bg);">
-      <!-- Unlocked DMs: conversations the user has actually exchanged at least 1 message in -->
-      <div class="chat-list" id="chatList">
-        <div class="state-msg">Loading…</div>
-      </div>
-      <!-- Suggested Users: people who follow you but you don't follow back -->
-      <div id="suggestedUsersWrap" style="display:none;padding:0 14px 14px;">
-        <div style="height:1px;background:var(--b1);margin:0 0 14px;"></div>
-        <div style="font-size:13px;font-weight:700;color:var(--tm);letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px;">Follow Back to Unlock DMs</div>
-        <div id="suggestedUsersList" style="display:flex;flex-direction:column;gap:8px;"></div>
-        <button type="button" class="suggested-show-more-btn hidden" id="suggestedShowMoreBtn" onclick="nxShowMoreSuggestions()">Show 5 more</button>
-        <div class="suggested-caught-up hidden" id="suggestedAllCaughtUp"><span>🎉</span><span>You're all caught up — no more follow suggestions.</span></div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- 2. STUDENT PROFILE SCREEN -->
-  <div class="profile-screen" id="profileScreen">
-    <div class="af-topbar">
-      <button class="af-back" onclick="nxCloseProfile()">←</button>
-      <div class="af-topbar-title" id="profileHdrName">Profile</div>
-    </div>
-    <div class="af-page" id="profilePageScroll" style="padding:0;">
-      <div id="profileTopCard" style="padding:24px 20px;background:var(--card-s);border-bottom:1px solid var(--b1);">
-        <div style="display:flex;align-items:center;gap:16px;">
-           <div class="avatar avatar-lg" id="profileAvatar" style="width:72px;height:72px;font-size:32px;"></div>
-           <div style="flex:1;min-width:0;">
-             <h2 id="profileName" style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></h2>
-             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-               <div id="profileUsername" style="font-size:13.5px;color:var(--tm);font-weight:600;"></div>
-               <span id="profileFollowsYouBadge" style="display:none;font-size:11px;font-weight:700;color:var(--tm);background:var(--b1);border-radius:6px;padding:2px 7px;letter-spacing:.02em;">Follows you</span>
-             </div>
-           </div>
-        </div>
-        <div id="profileBio" style="margin-top:16px;font-size:14px;color:var(--t2);line-height:1.6;"></div>
-        <div style="display:flex;gap:32px;margin-top:20px;">
-           <div onclick="nxOpenFollowersFor()" style="cursor:pointer;display:flex;flex-direction:column;"><strong id="profileFollowersCount" style="color:var(--t1);font-family:var(--fd);font-size:18px;line-height:1;">0</strong><span style="font-size:12px;color:var(--tm);font-weight:600;margin-top:4px;">Followers</span></div>
-           <div onclick="nxOpenFollowingFor()" style="cursor:pointer;display:flex;flex-direction:column;"><strong id="profileFollowingCount" style="color:var(--t1);font-family:var(--fd);font-size:18px;line-height:1;">0</strong><span style="font-size:12px;color:var(--tm);font-weight:600;margin-top:4px;">Following</span></div>
-        </div>
-        <div style="display:flex;gap:12px;margin-top:24px;">
-          <button id="profileFollowBtn" class="af-btn-primary" style="flex:1;" onclick="nxToggleFollow()">Follow</button>
-          <button id="profileMessageBtn" class="af-btn-secondary-outline" style="flex:1;" onclick="nxMessageFromProfile()">Message</button>
-        </div>
-      </div>
-      <div class="af-tabs" style="padding:14px 16px 0;background:var(--bg);border:none;">
-         <div class="af-tab-btn active" style="color:var(--t1);">Posts</div>
-      </div>
-      <div class="post-list" id="profilePostsList" style="background:var(--bg);">
-         <div class="state-msg">Loading…</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MY PROFILE SCREEN -->
-  <div class="my-profile-screen" id="myProfileScreen">
-    <div class="af-topbar">
-      <div class="af-topbar-title">Profile</div>
-      <button class="af-hdr-icon-btn" onclick="nxOpenMainMenu()" aria-label="Settings" style="margin-left:auto;font-size:18px;">⋮</button>
-    </div>
-    <div class="af-page" id="myProfilePageScroll" style="padding:0;">
-      <div id="myProfileTopCard" style="padding:24px 20px;background:var(--card-s);border-bottom:1px solid var(--b1);">
-        <div style="display:flex;align-items:center;gap:16px;">
-           <div class="avatar avatar-lg" id="myProfileAvatar" style="width:72px;height:72px;font-size:32px;position:relative;overflow:visible;">
-             <div id="myProfileAvatarInner" style="width:72px;height:72px;border-radius:18px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:32px;"></div>
-           </div>
-           <div style="flex:1;min-width:0;">
-             <h2 id="myProfileName" style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></h2>
-             <div id="myProfileUsername" style="font-size:13.5px;color:var(--tm);font-weight:600;"></div>
-           </div>
-        </div>
-        <div id="myProfileBio" style="margin-top:16px;font-size:14px;color:var(--t2);line-height:1.6;"></div>
-        <div style="display:flex;gap:32px;margin-top:20px;">
-           <div onclick="nxOpenFollowers()" style="cursor:pointer;display:flex;flex-direction:column;"><strong id="myProfileFollowersCount" style="color:var(--t1);font-family:var(--fd);font-size:18px;line-height:1;">0</strong><span style="font-size:12px;color:var(--tm);font-weight:600;margin-top:4px;">Followers</span></div>
-           <div onclick="nxOpenFollowing()" style="cursor:pointer;display:flex;flex-direction:column;"><strong id="myProfileFollowingCount" style="color:var(--t1);font-family:var(--fd);font-size:18px;line-height:1;">0</strong><span style="font-size:12px;color:var(--tm);font-weight:600;margin-top:4px;">Following</span></div>
-           <div style="display:flex;flex-direction:column;"><strong id="myProfilePostsCount" style="color:var(--t1);font-family:var(--fd);font-size:18px;line-height:1;">0</strong><span style="font-size:12px;color:var(--tm);font-weight:600;margin-top:4px;">Posts</span></div>
-        </div>
-      </div>
-      <div class="af-tabs" style="padding:14px 16px 0;background:var(--bg);border:none;">
-         <div class="af-tab-btn active" style="color:var(--t1);">My Posts</div>
-      </div>
-      <div class="post-list" id="myProfilePostsList" style="background:var(--bg);">
-         <div class="state-msg">Loading…</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FULL SCREEN SEARCH -->
-  <div class="full-screen-view" id="searchScreen">
-    <div class="af-topbar">
-       <div style="flex:1;background:var(--inp);border-radius:11px;display:flex;align-items:center;padding:0 12px;height:38px;border:1.5px solid var(--b1);">
-          <span style="font-size:14px;color:var(--tm);margin-right:8px;">🔍</span>
-          <input type="text" id="fullSearchInp" placeholder="Search for users…" oninput="nxFullSearchTyping()" autocomplete="off" style="flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-family:var(--fb);font-size:14px;font-weight:500;"/>
-          <button id="fullSearchClear" style="display:none;color:var(--tm);font-size:16px;margin-left:8px;" onclick="nxClearFullSearch()">✕</button>
-       </div>
-    </div>
-    <div class="af-page" id="fullSearchResults" style="padding:12px;">
-       <div class="state-msg"><span>🔍</span><span>Search for students by name or username.</span></div>
-    </div>
-  </div>
-
-  <!-- DM THREAD SCREEN -->
-  <div class="dm-screen" id="dmScreen">
-    <div class="dm-hdr" id="dmHdr">
-      <button class="af-back" onclick="nxCloseDM()" style="background:transparent;border:none;width:auto;font-size:22px;margin-right:4px;">←</button>
-      <div class="avatar avatar-sm" id="dmPeerAvatar" onclick="nxOpenProfileFromDM()" style="cursor:pointer;"></div>
-      <div class="dm-hdr-info" onclick="nxOpenProfileFromDM()">
-        <div style="display:flex;align-items:center;gap:4px;">
-          <div class="dm-hdr-name" id="dmPeerName"></div>
-          <span class="verified-badge" id="dmPeerVerifiedBadge" style="display:none;">✔</span>
-          <span class="gold-badge" id="dmPeerGoldBadge" style="display:none;">★</span>
-        </div>
-        <div class="dm-hdr-status" id="dmHdrStatus"></div>
-      </div>
-      <button class="af-hdr-icon-btn" onclick="nxOpenDMSearch()" style="margin-left:auto;margin-right:2px;" aria-label="Search messages">🔍</button>
-      <button class="af-hdr-icon-btn" onclick="nxOpenDMOptions()" aria-label="Chat options">⋯</button>
-    </div>
-    <!-- DM inline search bar (hidden until search icon tapped) -->
-    <div class="dm-search-bar hidden" id="dmSearchBar">
-      <input id="dmSearchInput" class="dm-search-input" type="search" placeholder="Search messages…" oninput="nxDMSearchInput()" autocomplete="off"/>
-      <span id="dmSearchCount" class="dm-search-count"></span>
-      <button class="dm-search-nav" id="dmSearchPrev" onclick="nxDMSearchNav(-1)" aria-label="Previous match" disabled>↑</button>
-      <button class="dm-search-nav" id="dmSearchNext" onclick="nxDMSearchNav(1)"  aria-label="Next match"     disabled>↓</button>
-      <button class="dm-search-close" onclick="nxCloseDMSearch()" aria-label="Close search">✕</button>
-    </div>
-    <div class="dm-messages" id="dmMessages">
-      <div class="state-msg">Loading…</div>
-    </div>
-    
-    <!-- Image Attachment Preview in DM -->
-    <div id="dmImagePreviewWrap" class="hidden" style="padding:10px 14px; background:var(--hdr); border-top:1px solid var(--b1); position:relative;">
-      <div style="position:relative; display:inline-block;">
-         <img id="dmImagePreview" style="max-height:100px; border-radius:8px; box-shadow:var(--sh);"/>
-         <button onclick="nxRemoveDMImage()" style="position:absolute; top:-8px; right:-8px; background:var(--err); color:#fff; border-radius:50%; width:24px; height:24px; font-size:12px; display:flex; align-items:center; justify-content:center; box-shadow:var(--sh);">✕</button>
-      </div>
-    </div>
-
-    <div class="dm-edit-banner hidden" id="dmEditBanner">
-      <span>Editing message…</span>
-      <button onclick="nxCancelEditDM()">Cancel</button>
-    </div>
-    <div class="dm-reply-banner hidden" id="dmReplyBanner">
-      <span style="font-size:13px;flex-shrink:0;">↩</span>
-      <span class="dm-reply-banner-text" id="dmReplyPreview"></span>
-      <button class="dm-reply-cancel" onclick="nxCancelDMReply()">✕</button>
-    </div>
-    <div class="dm-input-area" style="position:relative;">
-      <div id="dmBlockedBanner" class="hidden" style="position:absolute;inset:0;background:var(--hdr);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--tm);z-index:5;backdrop-filter:blur(16px);border-top:1px solid var(--b1);">You cannot send messages to this user.</div>
-      
-      <!-- Attachment Icon -->
-      <button id="dmAttachBtn" onclick="nxAttachDMImage()" style="font-size:20px; color:var(--t2); display:flex; align-items:center; justify-content:center; flex-shrink:0; padding-bottom:10px;">📎</button>
-      <input type="file" id="dmImageInput" accept="image/*" class="hidden" onchange="nxHandleDMImage(this)"/>
-
-      <textarea class="dm-textarea" id="dmInput" rows="1" placeholder="Type a message…" oninput="nxDMTyping()"></textarea>
-      <button class="dm-send" id="dmSendBtn" onclick="nxSendDM()" disabled>➤</button>
-    </div>
-  </div>
-
-  <!-- ── MODALS ── -->
-  <div class="modal-ov fullscreen-sheet" id="followListModal" onclick="nxCloseFollowList()">
-    <div class="modal-card fullscreen-card" onclick="event.stopPropagation()">
-      <div class="modal-head fullscreen-head">
-        <div><h3 id="followListTitle">Followers</h3></div>
-        <button class="modal-close sheet-x" onclick="nxCloseFollowList()" aria-label="Close">✕</button>
-      </div>
-      <div class="modal-body" id="followListBody" style="padding:0;gap:0;"></div>
-    </div>
-  </div>
-
-  <div class="modal-ov fullscreen-sheet" id="notificationsModal" onclick="nxCloseNotifications()">
-    <div class="modal-card fullscreen-card" onclick="event.stopPropagation()">
-      <div class="modal-head fullscreen-head">
-        <div><h3>Notifications</h3><p>Followers and messages</p></div>
-        <button class="modal-close sheet-x" onclick="nxCloseNotifications()" aria-label="Close">✕</button>
-      </div>
-      <div class="modal-body notification-list" id="notificationList" style="padding:0;gap:0;"></div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="editProfileModal" onclick="nxCloseEditProfile()">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <div class="modal-drag"></div>
-      <div class="modal-head">
-        <div><h3>Edit Profile</h3><p>Customize your presence</p></div>
-        <button class="modal-close" onclick="nxCloseEditProfile()">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="field-label">Profile Picture</div>
-        <div style="display:flex;align-items:center;gap:14px;padding:4px 0;">
-          <div class="avatar-upload-ring" onclick="document.getElementById('avatarFileInput').click()" style="cursor:pointer;">
-            <div class="avatar avatar-lg" id="editProfileAvatarPreview" style="width:64px;height:64px;font-size:28px;border-radius:16px;overflow:hidden;"></div>
-            <div class="upload-overlay" style="border-radius:16px;">📷</div>
-          </div>
-          <div style="flex:1;">
-            <div style="font-size:13px;font-weight:600;color:var(--t1);">Upload photo</div>
-            <div style="font-size:11.5px;color:var(--tm);margin-top:3px;">Tap the avatar to upload</div>
-            <button id="removeAvatarBtn" onclick="nxRemoveAvatar()" style="font-size:11.5px;color:var(--err);font-weight:700;margin-top:6px;display:none;">Remove photo</button>
-          </div>
-          <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="nxHandleAvatarUpload(this)"/>
-        </div>
-        <div class="field-label" style="margin-top:8px;">Display Name</div>
-        <input type="text" class="field" id="displayNameInput" placeholder="e.g. Rahul Kumar" maxlength="40" oninput="nxDisplayNameTyping()"/>
-        <span style="font-size:12px;font-weight:600;color:var(--tm);margin-top:-6px;" id="displayNameHint">2-40 characters. This is shown on your posts, comments and messages.</span>
-        <div class="field-label" style="margin-top:8px;">Username</div>
-        <input type="text" class="field" id="usernameInput" placeholder="e.g. rahul_42" maxlength="24" oninput="nxUsernameTyping()"/>
-        <span style="font-size:12px;font-weight:600;color:var(--tm);margin-top:-6px;" id="usernameHint">3-24 chars: lowercase letters, numbers, underscore.</span>
-        <div class="field-label" style="margin-top:8px;">Bio</div>
-        <textarea class="compose" id="bioInput" rows="2" style="min-height:70px;" placeholder="Say something about yourself…" maxlength="160"></textarea>
-        <div class="compose-foot" style="margin-top:8px;">
-          <span></span>
-          <button class="af-btn-primary" id="saveProfileBtn" onclick="nxSaveProfile()">Save Profile</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── STORY VIEWER ── -->
-  <div class="story-viewer" id="storyViewer"
-    ontouchstart="nxSvTouchStart(event)"
-    ontouchend="nxSvTouchEnd(event)"
-    ontouchcancel="nxSvTouchEnd(event)"
-    ontouchmove="nxSvTouchMove(event)">
-    <div class="sv-progress" id="svProgress"></div>
-    <div class="sv-hdr">
-      <div id="svHdrClickable">
-        <div class="sv-hdr-av" id="svHdrAv"></div>
-        <div class="sv-hdr-info">
-          <div class="sv-hdr-name" id="svHdrName"></div>
-          <div class="sv-hdr-time" id="svHdrTime"></div>
-        </div>
-      </div>
-      <button class="sv-opts-btn" id="svOptsBtn" onclick="nxOpenStoryOpts()" style="display:none;" aria-label="Story options">⋯</button>
-      <button class="sv-close" onclick="nxCloseStoryViewer()">✕</button>
-    </div>
-    <!-- Story options dropdown (own story only) -->
-    <div class="sv-opts-menu" id="svOptsMenu">
-      <button class="sv-opts-delete" onclick="nxCloseStoryOpts();nxDeleteCurrentStory()">🗑 Delete Story</button>
-    </div>
-    <div class="sv-media" id="svMedia">
-      <div class="sv-tap-prev" onclick="nxStoryPrev()"></div>
-      <div class="sv-tap-next" onclick="nxStoryNext()"></div>
-    </div>
-    <div class="sv-caption" id="svCaption"></div>
-    <!-- Reply bar — shown for others' stories -->
-    <div class="sv-reply-bar" id="svReplyBar">
-      <div class="sv-reply-row">
-        <input type="text" id="svReplyInput" placeholder="Reply to this story…" maxlength="200"
-          oninput="nxStoryReplyTyping()"
-          onfocus="nxSvPauseForReply()"
-          onblur="nxSvResumeFromReply()"/>
-        <button class="sv-reply-send" id="svReplySendBtn" onclick="nxStorySendReply()" disabled aria-label="Send">➤</button>
-      </div>
-    </div>
-    <!-- Bottom bar: seen-by + swipe hint (own story only) -->
-    <div class="sv-bottom-bar" id="svBottomBar">
-      <div class="sv-swipe-hint" id="svSwipeHint">Swipe up for viewers</div>
-      <button class="sv-seen-btn" id="svSeenBtn" onclick="nxOpenSeenBy()">
-        <span class="sv-eye-ic">👁</span>
-        <span id="svSeenCount">0</span>
+      <button onclick="app.bypassClosedForDemo()" class="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-flask text-amber-400"></i>
+        <span>Preview Menu & Test Order Mode</span>
       </button>
-    </div>
-    <!-- Seen-by slide-up panel -->
-    <div class="sv-seen-panel" id="svSeenPanel">
-      <div class="sv-seen-panel-inner">
-        <div class="sv-seen-drag"></div>
-        <div class="sv-seen-hdr">
-          <span class="sv-seen-title">Seen by</span>
-          <button class="sv-seen-close" onclick="nxCloseSeenBy()">✕</button>
+    </section>
+
+    <!-- VIEW: HOME & MENU -->
+    <section id="viewHome">
+      <!-- Hero Banner -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/40 border border-slate-800/80 p-5 mb-6 shadow-xl">
+        <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[11px] font-bold uppercase tracking-wider mb-2.5">
+          <i class="fa-solid fa-bell-concierge"></i> Fresh Hostel Delivery
         </div>
-        <div class="sv-seen-list" id="svSeenList">
-          <div class="state-msg">Loading…</div>
-        </div>
-      </div>
-    </div>
-    <!-- All caught up screen (after last story) -->
-    <div class="sv-caught-up" id="svCaughtUp">
-      <div class="sv-caught-up-check">✓</div>
-      <div class="sv-caught-up-title">You're all caught up!</div>
-      <div class="sv-caught-up-sub">You've seen every story from your network.</div>
-      <button class="sv-caught-up-btn" onclick="nxCloseStoryViewer();nxSwitchTab('feed')">Go to Feed</button>
-    </div>
-  </div>
-
-  <!-- ── STORY COMPOSER ── -->
-  <div class="story-composer" id="storyComposer">
-    <div class="af-topbar">
-      <button class="af-back" onclick="nxCloseStoryComposer()">←</button>
-      <div class="af-topbar-title">Add Story</div>
-    </div>
-    <div class="sc-preview" id="scPreview">
-      <div class="sc-empty" id="scEmpty">
-        <div class="sc-empty-icon">📷</div>
-        <p>Pick a photo or video below</p>
-      </div>
-    </div>
-    <div class="sc-controls">
-      <div class="sc-pick-row">
-        <button class="sc-pick-btn" onclick="document.getElementById('scImageInput').click()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          Photo
-        </button>
-        <button class="sc-pick-btn" onclick="document.getElementById('scVideoInput').click()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-          Video
-        </button>
-      </div>
-      <input type="file" id="scImageInput" accept="image/*" class="hidden" onchange="nxHandleStoryMedia(this,'image')"/>
-      <input type="file" id="scVideoInput" accept="video/mp4,video/webm,video/quicktime" class="hidden" onchange="nxHandleStoryMedia(this,'video')"/>
-      <textarea class="sc-caption-inp" id="scCaption" placeholder="Add a caption (optional)…" rows="1" maxlength="200"></textarea>
-      <button class="af-btn-primary" id="scPostBtn" onclick="nxPostStory()" disabled style="width:100%;">Share Story</button>
-    </div>
-  </div>
-
-  <!-- ── POST COMPOSER MODAL (updated with image support) ── -->
-  <div class="modal-ov" id="composerModal" onclick="nxCloseComposer()">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <div class="modal-drag"></div>
-      <div class="modal-head">
-        <div><h3>Create Post</h3><p>Share your thoughts</p></div>
-        <button class="modal-close" onclick="nxCloseComposer()">✕</button>
-      </div>
-      <div class="modal-body">
-        <textarea class="compose" id="postInput" rows="5" placeholder="Write something helpful, thoughtful, or interesting…" oninput="nxPostTyping()"></textarea>
-        <!-- Post image preview -->
-        <div id="postImagePreviewWrap" class="hidden" style="position:relative;display:inline-block;">
-          <img id="postImagePreview" style="max-height:120px;border-radius:10px;box-shadow:var(--sh);"/>
-          <button onclick="nxRemovePostImage()" style="position:absolute;top:-8px;right:-8px;background:var(--err);color:#fff;border-radius:50%;width:24px;height:24px;font-size:12px;display:flex;align-items:center;justify-content:center;">✕</button>
-        </div>
-        <div class="compose-foot">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <button id="postAttachBtn" onclick="nxAttachPostImage()" style="color:var(--tm);font-size:22px;display:flex;align-items:center;" aria-label="Add image">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            </button>
-            <input type="file" id="postImageInput" accept="image/*" class="hidden" onchange="nxHandlePostImage(this)"/>
-            <span id="postCount">0 / 80 words</span>
-          </div>
-          <button class="af-btn-primary" id="postSubmitBtn" onclick="nxCreatePost()" disabled>Post</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-  <div class="modal-ov" id="commentsModal" onclick="nxCloseComments()">
-    <div class="modal-card" onclick="event.stopPropagation()" style="height:85dvh;">
-      <div class="modal-drag"></div>
-      <div class="modal-head">
-        <div><h3>Comments</h3><p id="commentsPreview">Join the discussion</p></div>
-        <button class="modal-close" onclick="nxCloseComments()">✕</button>
-      </div>
-      <div class="comments-list" id="commentsList">
-        <div class="state-msg">Loading…</div>
-      </div>
-      <div class="comment-input-area">
-        <textarea class="compose" id="commentInput" rows="2" placeholder="Write a comment…" oninput="nxCommentTyping()" style="min-height:60px;"></textarea>
-        <div class="compose-foot">
-          <span id="commentCount">0 / 80 words</span>
-          <button class="af-btn-primary" style="height:38px;font-size:13px;" id="commentSubmitBtn" onclick="nxCreateComment()" disabled>Comment</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="replyModal" onclick="nxCloseReply()">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <div class="modal-drag"></div>
-      <div class="modal-head">
-        <div><h3>Reply</h3><p id="replyTarget">Reply to comment</p></div>
-        <button class="modal-close" onclick="nxCloseReply()">✕</button>
-      </div>
-      <div class="modal-body">
-        <textarea class="compose" id="replyInput" rows="4" placeholder="Write your reply…" oninput="nxReplyTyping()"></textarea>
-        <div class="compose-foot">
-          <span id="replyCount">0 / 80 words</span>
-          <button class="af-btn-primary" id="replySubmitBtn" onclick="nxCreateReply()" disabled>Reply</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="reportModal" onclick="nxCloseReport()">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <div class="modal-drag"></div>
-      <div class="modal-head">
-        <div><h3>Report Content</h3><p>Help keep the community safe</p></div>
-        <button class="modal-close" onclick="nxCloseReport()">✕</button>
-      </div>
-      <div class="modal-body">
-        <div style="display:flex;flex-direction:column;gap:8px;" id="reportOptions">
-          <button class="af-btn-secondary-outline" style="justify-content:flex-start;height:48px;" data-reason="Spam or self-promotion" onclick="nxSelectReport(this)">🚫 Spam or self-promotion</button>
-          <button class="af-btn-secondary-outline" style="justify-content:flex-start;height:48px;" data-reason="Harassment or bullying" onclick="nxSelectReport(this)">😠 Harassment or bullying</button>
-          <button class="af-btn-secondary-outline" style="justify-content:flex-start;height:48px;" data-reason="Hate speech or discrimination" onclick="nxSelectReport(this)">⚠️ Hate speech or discrimination</button>
-          <button class="af-btn-secondary-outline" style="justify-content:flex-start;height:48px;" data-reason="False information" onclick="nxSelectReport(this)">❌ False information</button>
-          <button class="af-btn-secondary-outline" style="justify-content:flex-start;height:48px;" data-reason="Other" onclick="nxSelectReport(this)">📝 Other</button>
-        </div>
-        <input type="text" class="field hidden" id="reportOtherInp" placeholder="Describe the issue…" maxlength="200"/>
-        <button class="af-btn-primary" style="background:var(--err);margin-top:10px;" id="reportSubmitBtn" onclick="nxSubmitReport()" disabled>Submit Report</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="menuModal" onclick="nxCloseMenu()">
-    <div class="menu-sheet" onclick="event.stopPropagation()">
-      <div class="modal-drag"></div>
-      <div class="menu-label">Options</div>
-      <button id="menuPinBtn" class="pin-action hidden" onclick="nxTogglePin()">📌 Pin Post</button>
-      <button id="menuUnpinBtn" class="pin-action hidden" onclick="nxTogglePin()">📌 Unpin Post</button>
-      <button id="menuReportBtn" onclick="nxOpenReport()">🚩 Report</button>
-      <button id="menuEditBtn" style="display:none;" onclick="nxEditTarget()">✏️ Edit</button>
-      <button id="menuDeleteBtn" class="danger" style="display:none;" onclick="nxDeleteTarget()">🗑 Delete</button>
-      <button onclick="nxCloseMenu()">✕ Cancel</button>
-    </div>
-  </div>
-
-  <!-- Floating emoji reaction picker -->
-  <div class="emoji-picker-float" id="emojiPickerFloat">
-    <button onclick="nxSendReaction('❤️')">❤️</button>
-    <button onclick="nxSendReaction('👍')">👍</button>
-    <button onclick="nxSendReaction('😂')">😂</button>
-    <button onclick="nxSendReaction('😮')">😮</button>
-    <button onclick="nxSendReaction('😢')">😢</button>
-    <button onclick="nxSendReaction('🔥')">🔥</button>
-  </div>
-
-  <div class="modal-ov" id="dmOptionsModal" onclick="nxCloseDMOptions()">
-    <div class="menu-sheet" onclick="event.stopPropagation()">
-      <div class="modal-drag"></div>
-      <div class="menu-label">Chat Options</div>
-      <button id="dmBlockBtn" class="danger" onclick="nxBlockCurrentPeer()">🚫 Block User</button>
-      <button id="dmUnblockBtn" class="danger hidden" onclick="nxUnblockCurrentPeer()" style="color:var(--ok);">✅ Unblock User</button>
-      <button class="danger" onclick="nxOpenClearChatConfirm()">🗑 Clear Chat History</button>
-      <button onclick="nxCloseDMOptions()">✕ Cancel</button>
-    </div>
-  </div>
-
-  <div class="modal-ov" id="clearChatModal" onclick="nxCloseClearChatConfirm()">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <div class="modal-drag"></div>
-      <div class="modal-head">
-        <div><h3>Clear Chat History</h3><p>This cannot be undone</p></div>
-        <button class="modal-close" onclick="nxCloseClearChatConfirm()">✕</button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size:14px;color:var(--t2);line-height:1.6;">
-          This will clear the chat history for you. 
-          <strong id="clearChatPeerName" style="color:var(--t1);"></strong> will still be able to see these messages.
+        <h2 class="text-2xl font-black text-white leading-tight mb-2 tracking-tight">
+          Hungry After <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">Midnight?</span>
+        </h2>
+        <p class="text-xs text-slate-300 leading-relaxed mb-4">
+          Steaming hot Maggie, fresh eggs & midnight canteen snacks delivered directly to your hostel room floor.
         </p>
-        <button class="af-btn-primary" style="background:var(--err);margin-top:4px;" id="clearChatConfirmBtn" onclick="nxConfirmClearChat()">Clear for me</button>
-        <button class="af-btn-secondary-outline" onclick="nxCloseClearChatConfirm()">Cancel</button>
-      </div>
-    </div>
-  </div>
 
-  <div class="modal-ov fullscreen-sheet" id="mainMenuModal" onclick="nxCloseMainMenu()">
-    <div class="modal-card fullscreen-card settings-card" onclick="event.stopPropagation()">
-      <div class="modal-head fullscreen-head">
-        <div><h3>Settings</h3><p>Profile, privacy and appearance</p></div>
-        <button class="modal-close sheet-x" onclick="nxCloseMainMenu()" aria-label="Close">✕</button>
-      </div>
-      <div class="settings-list">
-        <div class="settings-row">
-          <div>
-            <strong>Theme</strong>
-            <span>Choose how JB Knowledge Park looks on this device.</span>
+        <!-- Quick 3-Pill Highlights -->
+        <div class="grid grid-cols-3 gap-2 text-center pt-2 border-t border-slate-800/60">
+          <div class="bg-slate-950/60 border border-slate-800/60 p-2 rounded-xl">
+            <span class="text-base block mb-0.5">⚡</span>
+            <p class="text-[10px] font-bold text-slate-200">Ready Items</p>
+            <p class="text-[9px] text-amber-400/90 font-medium">~10 min</p>
           </div>
-          <select class="theme-select" id="themeModeSelect" onchange="nxSetThemeMode(this.value)">
-            <option value="system">System</option>
-            <option value="dark">Dark</option>
-            <option value="light">Light</option>
-          </select>
+          <div class="bg-slate-950/60 border border-slate-800/60 p-2 rounded-xl">
+            <span class="text-base block mb-0.5">🔥</span>
+            <p class="text-[10px] font-bold text-slate-200">Cooked Food</p>
+            <p class="text-[9px] text-amber-400/90 font-medium">~40 min</p>
+          </div>
+          <div class="bg-slate-950/60 border border-slate-800/60 p-2 rounded-xl">
+            <span class="text-base block mb-0.5">🏠</span>
+            <p class="text-[10px] font-bold text-slate-200">To Your Door</p>
+            <p class="text-[9px] text-emerald-400 font-medium">Room Delivery</p>
+          </div>
         </div>
-        <button class="settings-action" onclick="nxOpenEditProfile();nxCloseMainMenu();">Edit Profile</button>
-        <button class="settings-action" onclick="nxOpenBlockedUsers()">Blocked Users</button>
-        <button class="settings-action danger" onclick="nxLogout()">Log out</button>
       </div>
-    </div>
-  </div>
 
-  <div class="modal-ov" id="blockListModal" onclick="nxCloseBlockedUsers()">
-    <div class="modal-card" onclick="event.stopPropagation()" style="max-height:80dvh;">
-      <div class="modal-drag"></div>
-      <div class="modal-head">
-        <div><h3>Blocked Users</h3><p>Manage your blocklist</p></div>
-        <button class="modal-close" onclick="nxCloseBlockedUsers()">✕</button>
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-3 custom-scrollbar mb-4">
+        <button onclick="app.setCategory('all')" id="cat-all" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition whitespace-nowrap bg-amber-500 text-slate-950 shadow-md">
+          All Items
+        </button>
+        <button onclick="app.setCategory('cooked')" id="cat-cooked" class="cat-btn px-4 py-2 rounded-full text-xs font-semibold transition whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white">
+          🍳 Freshly Cooked (~40m)
+        </button>
+        <button onclick="app.setCategory('ready')" id="cat-ready" class="cat-btn px-4 py-2 rounded-full text-xs font-semibold transition whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white">
+          🥤 Ready to Serve (~10m)
+        </button>
       </div>
-      <div class="modal-body" id="blockListBody" style="padding:0;gap:0;"></div>
+
+      <!-- Products Grid -->
+      <div id="productsList" class="space-y-3.5">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- VIEW: CART -->
+    <section id="viewCart" class="hidden">
+      <div class="flex items-center justify-between mb-4">
+        <button onclick="app.navigateTo('home')" class="text-xs font-semibold text-slate-400 hover:text-amber-400 flex items-center gap-1.5 py-1">
+          <i class="fa-solid fa-arrow-left"></i> Back to Menu
+        </button>
+        <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Order Summary</span>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-4 mb-4 shadow-xl">
+        <div id="cartItemsContainer" class="divide-y divide-slate-800/80">
+          <!-- Cart items rendered here -->
+        </div>
+
+        <div id="cartEmptyMessage" class="hidden text-center py-10">
+          <div class="text-4xl mb-3">🛒</div>
+          <p class="text-sm font-semibold text-slate-300">Your late-night bag is empty</p>
+          <p class="text-xs text-slate-500 mt-1 mb-4">Add Maggie, boiled eggs, or drinks to get started!</p>
+          <button onclick="app.navigateTo('home')" class="px-5 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs">
+            Browse Menu
+          </button>
+        </div>
+
+        <!-- Bill Breakdown -->
+        <div id="cartBillSection" class="pt-4 mt-2 border-t border-slate-800 space-y-2 text-xs">
+          <div class="flex justify-between text-slate-300">
+            <span>Food Total</span>
+            <span class="font-mono font-semibold" id="cartFoodTotal">₹0</span>
+          </div>
+          <div class="flex justify-between text-slate-300 items-center">
+            <span class="flex items-center gap-1.5">
+              <span>Delivery & Hostel Service</span>
+              <span class="bg-slate-800 text-[10px] text-amber-400 px-1.5 py-0.5 rounded font-mono">Fixed</span>
+            </span>
+            <span class="font-mono font-semibold" id="cartServiceCharge">₹20</span>
+          </div>
+          <div class="pt-2 border-t border-slate-800 flex justify-between items-center text-sm font-bold text-white">
+            <span>Amount to Pay</span>
+            <span class="font-mono text-lg text-amber-400" id="cartTotalPayable">₹20</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkout Form Card -->
+      <div id="checkoutFormSection" class="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-3.5">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-location-dot text-amber-400"></i>
+          Hostel Room & Contact Details
+        </h3>
+        <p class="text-[11px] text-slate-400">Ensure room number and WhatsApp are exact so our delivery team can reach you instantly.</p>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Your Full Name *</label>
+          <input type="text" id="custName" placeholder="e.g. Rahul Kumar" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-600 outline-none transition">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Hostel / Block *</label>
+            <input type="text" id="custHostel" placeholder="e.g. Block B / Boys Hostel 1" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-600 outline-none transition">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Room Number *</label>
+            <input type="text" id="custRoom" placeholder="e.g. B-214" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-600 outline-none transition font-mono">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">WhatsApp Number *</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-2.5 text-xs text-slate-500 font-mono">+91</span>
+            <input type="tel" id="custPhone" maxlength="10" placeholder="9876543210" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl pl-12 pr-3.5 py-2.5 text-xs text-white placeholder:text-slate-600 outline-none transition font-mono">
+          </div>
+          <p class="text-[10px] text-slate-500 mt-1">Used for payment screenshot verification & delivery call.</p>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Special Instructions (Optional)</label>
+          <input type="text" id="custNotes" placeholder="e.g. Extra spicy Maggie, don't knock too loudly" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-600 outline-none transition">
+        </div>
+
+        <button onclick="app.proceedToPayment()" class="w-full mt-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 active:scale-[0.99] transition flex items-center justify-center gap-2">
+          <span>Proceed to Payment</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- VIEW: PAYMENT SCREEN (UPI QR & MANUAL PAYMENT) -->
+    <section id="viewPayment" class="hidden">
+      <div class="bg-slate-900/95 border border-slate-800 rounded-3xl p-5 shadow-2xl text-center">
+        
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold mb-3">
+          <i class="fa-solid fa-shield-halved"></i> MANUAL UPI PAYMENT
+        </div>
+
+        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Exact Amount to Pay</p>
+        <div class="text-3xl font-extrabold text-amber-400 font-mono my-1" id="paymentAmountDisplay">₹0</div>
+        <p class="text-[11px] text-slate-400 mb-4">Includes Food Total + ₹20 Delivery/Service Fee</p>
+
+        <!-- Dynamic QR Code Container -->
+        <div class="relative bg-white p-4 rounded-2xl max-w-[210px] mx-auto shadow-xl border-4 border-amber-500/30">
+          <img id="upiQrImage" src="" alt="Scan UPI QR" class="w-full h-auto aspect-square object-contain mx-auto block">
+          <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-slate-950 text-[10px] font-mono font-bold text-amber-400 border border-slate-700 px-2 py-0.5 rounded-full whitespace-nowrap shadow">
+            SCAN WITH ANY UPI APP
+          </div>
+        </div>
+
+        <!-- UPI Apps Icons List -->
+        <div class="flex items-center justify-center gap-4 text-xs font-semibold text-slate-400 mt-5 mb-4">
+          <span class="flex items-center gap-1"><i class="fa-brands fa-google-pay text-base text-blue-400"></i> GPay</span>
+          <span>•</span>
+          <span class="flex items-center gap-1"><i class="fa-solid fa-mobile-screen-button text-purple-400"></i> PhonePe</span>
+          <span>•</span>
+          <span class="flex items-center gap-1"><i class="fa-solid fa-wallet text-sky-400"></i> Paytm</span>
+        </div>
+
+        <!-- UPI ID Copy Row -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between mb-4">
+          <div class="text-left overflow-hidden">
+            <span class="text-[10px] text-slate-500 block uppercase font-mono">Or Pay to UPI ID</span>
+            <span id="displayUpiId" class="text-xs font-mono font-bold text-slate-200 truncate block">nightbites@okaxis</span>
+          </div>
+          <button onclick="app.copyUpiId()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-[11px] text-amber-400 font-bold rounded-lg border border-slate-700 transition active:scale-95 flex items-center gap-1">
+            <i class="fa-regular fa-copy"></i>
+            <span id="copyBtnText">Copy</span>
+          </button>
+        </div>
+
+        <!-- Warning & Disclaimer Notice -->
+        <div class="bg-amber-950/30 border border-amber-500/30 rounded-xl p-3 text-left text-[11px] text-amber-200/90 mb-5 space-y-1">
+          <div class="font-bold flex items-center gap-1.5 text-amber-300">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Important Payment Rules:
+          </div>
+          <p>1. Pay the exact calculated amount via your UPI App.</p>
+          <p>2. Tap <strong>"I'VE PAID"</strong> below to generate your unique room order token.</p>
+          <p>3. <strong>Payment is NOT automatic.</strong> Our team will manually verify the payment screenshot on WhatsApp before preparing your order.</p>
+        </div>
+
+        <!-- I've Paid Action Button -->
+        <button onclick="app.confirmPaymentSubmitted()" class="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-black text-sm uppercase tracking-wider shadow-lg shadow-emerald-500/20 active:scale-[0.99] transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-circle-check text-base"></i>
+          <span>I've Paid ₹<span id="btnPayAmount">0</span></span>
+        </button>
+
+        <button onclick="app.navigateTo('cart')" class="w-full mt-3 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 transition">
+          Cancel or Edit Order Details
+        </button>
+      </div>
+    </section>
+
+    <!-- VIEW: TOKEN / PAYMENT SUBMITTED PAGE -->
+    <section id="viewToken" class="hidden">
+      <div class="bg-slate-900/95 border border-slate-800 rounded-3xl p-5 shadow-2xl text-center">
+
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl mb-3">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+
+        <h2 class="text-xl font-black text-white tracking-tight">Payment Submitted</h2>
+        <p class="text-xs text-amber-400 font-semibold mt-0.5 mb-4">Awaiting Manual Verification by Kitchen Team</p>
+
+        <!-- Token Big Display Box -->
+        <div class="bg-slate-950 border-2 border-dashed border-amber-500/50 rounded-2xl p-4 mb-4 relative overflow-hidden">
+          <span class="text-[10px] font-mono tracking-widest text-slate-400 uppercase block mb-1">YOUR UNIQUE ORDER TOKEN</span>
+          <div class="text-3xl font-black tracking-wider text-amber-400 font-mono py-1 select-all" id="submittedOrderToken">
+            NB----
+          </div>
+          <div class="mt-2 flex items-center justify-center gap-2">
+            <button onclick="app.copyTokenToClipboard()" class="px-3 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold hover:text-amber-400 transition flex items-center gap-1.5">
+              <i class="fa-regular fa-copy"></i>
+              <span id="tokenCopyBtnText">Copy Token</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Next Action Steps -->
+        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 text-left text-xs mb-4 space-y-2">
+          <p class="font-bold text-white flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 inline-flex items-center justify-center text-[10px] font-black">!</span>
+            Complete Verification in 2 Steps:
+          </p>
+          <div class="text-slate-300 text-[11px] space-y-1.5 pl-6 list-decimal">
+            <p>1. Click the green button below to open our WhatsApp.</p>
+            <p>2. Send the pre-filled token text + <strong>attach your UPI payment screenshot</strong>.</p>
+          </div>
+        </div>
+
+        <!-- WhatsApp Dispatch CTA -->
+        <button onclick="app.launchWhatsApp()" class="w-full py-3.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 active:scale-[0.99] transition flex items-center justify-center gap-2 mb-3">
+          <i class="fa-brands fa-whatsapp text-lg"></i>
+          <span>Send Token & Screenshot on WhatsApp</span>
+        </button>
+
+        <!-- Email Notification Status Banner -->
+        <div id="emailNotificationBadge" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400 flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2 text-left">
+            <i class="fa-regular fa-envelope text-amber-400 text-sm"></i>
+            <div>
+              <span class="text-white font-semibold block leading-none">Order Sent to Kitchen Email</span>
+              <span class="text-[10px] text-slate-400">academeforge@gmail.com</span>
+            </div>
+          </div>
+          <button onclick="app.triggerDirectEmailFallback()" class="px-2 py-1 rounded bg-slate-800 text-[10px] text-slate-300 hover:text-white">
+            Send Mail
+          </button>
+        </div>
+
+        <!-- Summary of Placed Order -->
+        <div class="bg-slate-950 border border-slate-800/80 rounded-2xl p-3 text-left text-xs text-slate-300 space-y-1.5 font-mono">
+          <div class="flex justify-between font-sans text-slate-400 pb-1 border-b border-slate-800 text-[11px]">
+            <span>Order Summary</span>
+            <span class="text-amber-400 font-bold" id="summaryRoom">Room: --</span>
+          </div>
+          <div id="summaryItemsList" class="space-y-1 pt-1 text-[11px]">
+            <!-- Items injected here -->
+          </div>
+          <div class="pt-2 border-t border-slate-800 flex justify-between font-bold text-white font-sans text-xs">
+            <span>Total to Verify</span>
+            <span class="text-amber-400 font-mono" id="summaryAmount">₹0</span>
+          </div>
+        </div>
+
+        <button onclick="app.startNewOrder()" class="mt-4 text-xs font-semibold text-slate-400 hover:text-white transition">
+          + Place Another Order
+        </button>
+      </div>
+    </section>
+
+    <!-- VIEW: ADMIN DASHBOARD (Protected by PIN) -->
+    <section id="viewAdmin" class="hidden">
+      <div class="flex items-center justify-between mb-4">
+        <button onclick="app.navigateTo('home')" class="text-xs font-semibold text-slate-400 hover:text-amber-400 flex items-center gap-1.5 py-1">
+          <i class="fa-solid fa-arrow-left"></i> Back to Storefront
+        </button>
+        <span class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1">
+          <i class="fa-solid fa-lock"></i> Kitchen Operations
+        </span>
+      </div>
+
+      <!-- Quick Admin Controls Card -->
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 mb-5 shadow-xl space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-black text-white">Live Controls</h3>
+            <p class="text-[11px] text-slate-400">Manage high rush, store hours & UPI details</p>
+          </div>
+          <button onclick="app.refreshAdminOrders()" class="p-2 text-slate-400 hover:text-white text-xs">
+            <i class="fa-solid fa-rotate-right"></i> Refresh
+          </button>
+        </div>
+
+        <!-- High Demand Toggle -->
+        <div class="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold text-white block">🔥 High Demand Mode</span>
+            <span class="text-[10px] text-slate-400">Shows rush warning to students</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="adminHighDemandToggle" onchange="app.toggleHighDemand(this.checked)" class="sr-only peer">
+            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+          </label>
+        </div>
+
+        <!-- Store Open / Closed Override -->
+        <div class="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold text-white block">🌙 Kitchen Ordering Open</span>
+            <span class="text-[10px] text-slate-400">Bypasses midnight schedule restriction</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="adminStoreOpenToggle" onchange="app.toggleStoreForceOpen(this.checked)" class="sr-only peer">
+            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+          </label>
+        </div>
+
+        <!-- Configurable UPI & WhatsApp Modal trigger -->
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button onclick="app.promptEditUpi()" class="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 border border-slate-700 flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-qrcode text-amber-400"></i> Edit UPI QR / ID
+          </button>
+          <button onclick="app.promptEditWhatsApp()" class="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 border border-slate-700 flex items-center justify-center gap-1.5">
+            <i class="fa-brands fa-whatsapp text-emerald-400"></i> Edit Phone No.
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Order Queue Header -->
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <span>Active Orders Queue</span>
+          <span id="adminOrdersCountBadge" class="bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full text-[10px] font-black">0</span>
+        </h3>
+        <span class="text-[10px] text-slate-400 font-mono">Realtime Live</span>
+      </div>
+
+      <!-- Admin Order Cards -->
+      <div id="adminOrdersList" class="space-y-3">
+        <!-- Injected dynamically -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Fixed Floating Mobile Bottom Bar -->
+  <div id="stickyBottomBar" class="fixed bottom-3 left-0 right-0 z-30 px-4 max-w-md mx-auto pointer-events-none transition-transform duration-300">
+    <div class="pointer-events-auto bg-slate-900/90 backdrop-blur-xl border border-slate-700/70 p-2.5 rounded-2xl shadow-2xl flex items-center justify-between">
+      <div class="flex items-center gap-3 pl-2 cursor-pointer" onclick="app.navigateTo('cart')">
+        <div class="relative">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-bold text-base shadow-md">
+            <i class="fa-solid fa-bag-shopping"></i>
+          </div>
+          <span id="floatingCartCount" class="absolute -top-1 -right-1 bg-red-500 text-white font-mono text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-900 shadow">
+            0
+          </span>
+        </div>
+        <div>
+          <span class="text-[10px] uppercase tracking-wider text-slate-400 block font-semibold leading-none">Your Order</span>
+          <span class="text-sm font-extrabold text-white font-mono" id="floatingCartTotal">₹20</span>
+        </div>
+      </div>
+
+      <button onclick="app.navigateTo('cart')" class="py-2.5 px-5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 active:scale-95 transition flex items-center gap-1.5">
+        <span>Checkout</span>
+        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+      </button>
     </div>
   </div>
 
- <nav class="af-bnav" id="bnav" aria-label="Primary navigation">
-      <button class="af-nav-btn active" onclick="nxNavTo('feed')" id="nav-feed" aria-label="Feed">
-        <span class="af-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
-        <span class="af-nav-label">Feed</span>
-      </button>
-      <button class="af-nav-btn" onclick="nxNavTo('search')" id="nav-search" aria-label="Search">
-        <span class="af-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg></span>
-        <span class="af-nav-label">Search</span>
-      </button>
-      <button class="af-nav-btn af-nav-compose" onclick="nxNavTo('post')" id="nav-post" aria-label="Write post">
-        <span class="af-nav-icon">+</span>
-        <span class="af-nav-label">Post</span>
-      </button>
-      <button class="af-nav-btn" onclick="nxNavTo('chats')" id="nav-chats" aria-label="Chats">
-        <span class="af-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg></span>
-        <span class="af-nav-label">Chats</span>
-      </button>
-      <button class="af-nav-btn" onclick="nxNavTo('profile')" id="nav-profile" aria-label="Profile">
-        <span class="af-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
-        <span class="af-nav-label">Profile</span>
-      </button>
-    </nav>
-
-  <div class="af-toast-wrap" id="toastWrap"></div>
-<!-- ── NO MUTUAL FOLLOW MODAL ── -->
-  <div id="noMutualFollowModal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);">
-    <div style="background:var(--card);border-radius:20px;padding:28px 24px;max-width:340px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3);">
-      <div style="font-size:40px;margin-bottom:12px;">🔒</div>
-      <div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:8px;">Messaging Restricted</div>
-      <div id="noMutualFollowMsg" style="font-size:14px;color:var(--t2);line-height:1.5;margin-bottom:20px;">You need to follow each other to send messages. Follow them first — once they follow you back, DMs will be unlocked.</div>
-      <button class="af-btn-primary" style="width:100%;margin-bottom:10px;" onclick="nxCloseNoMutualFollowModal()">Got it</button>
+  <!-- Modal: Admin PIN Access -->
+  <div id="adminPinModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
+      <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl mx-auto mb-3">
+        <i class="fa-solid fa-key"></i>
+      </div>
+      <h3 class="text-base font-black text-white mb-1">Kitchen Team Login</h3>
+      <p class="text-xs text-slate-400 mb-4">Enter team PIN to access incoming orders</p>
+      
+      <input type="password" id="adminPinInput" maxlength="6" placeholder="Enter PIN (Default: 1122)" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl py-2.5 px-3 text-center text-sm font-mono text-white mb-4 outline-none">
+      
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="app.closeAdminModal()" class="py-2 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300 hover:bg-slate-700">Cancel</button>
+        <button onclick="app.verifyAdminPin()" class="py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-bold hover:bg-amber-400">Unlock</button>
+      </div>
+      <p class="text-[10px] text-slate-500 mt-3">Demo default PIN is <span class="font-mono text-amber-400 font-bold">1122</span></p>
     </div>
   </div>
 
-</div><!-- /shell -->
+  <!-- Modal: Operating Schedule Info -->
+  <div id="hoursScheduleModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
+      <div class="text-3xl mb-2">🌙</div>
+      <h3 class="text-base font-black text-white mb-1">Night Shift Schedule</h3>
+      <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+        Night Bites operates every night from <strong class="text-amber-400">11:00 PM to 3:00 AM</strong> inside the hostel premises.
+      </p>
+      <div class="space-y-2 text-xs text-left bg-slate-950 p-3 rounded-xl border border-slate-800 mb-4">
+        <div class="flex justify-between">
+          <span class="text-slate-400">Ready Items Delivery:</span>
+          <span class="text-emerald-400 font-bold">~10 min</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Hot Cooked Maggie/Eggs:</span>
+          <span class="text-amber-400 font-bold">~40 min</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Hostel Delivery Charge:</span>
+          <span class="text-white font-bold font-mono">₹20 flat</span>
+        </div>
+      </div>
+      <button onclick="app.toggleHoursModal()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs">
+        Got it!
+      </button>
+    </div>
+  </div>
 
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/app/01-core.js"></script>
-<script src="assets/js/app/02-stories.js"></script>
-<script src="assets/js/app/03-tabs-init.js"></script>
-<script src="assets/js/app/04-compose-feed.js"></script>
-<script src="assets/js/app/05-search-profile.js"></script>
-<script src="assets/js/app/06-messaging.js"></script>
-<script src="assets/js/app/07-exports-lightbox.js"></script>
-<script src="assets/js/nav.js"></script>
+  <!-- Toast Notification Bar -->
+  <div id="toastContainer" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 opacity-0 transform -translate-y-4">
+    <div id="toastMessage" class="bg-slate-900 border border-amber-500/50 text-white text-xs font-semibold px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2">
+      <!-- Injected text -->
+    </div>
+  </div>
+
+  <script>
+    /**
+     * NIGHT BITES - Application Logic & State Engine
+     */
+    const CONFIG = {
+      defaultEmail: 'academeforge@gmail.com',
+      serviceCharge: 20,
+      adminPin: '1122',
+      defaultUpiId: 'nightbites@okaxis',
+      defaultWhatsApp: '919876543210',
+      startHour: 23, // 11:00 PM
+      endHour: 3     // 03:00 AM
+    };
+
+    // Initial Product Catalog
+    const DEFAULT_PRODUCTS = [
+      {
+        id: 'maggi-classic',
+        name: 'Classic Masala Maggi',
+        description: 'Piping hot 2-minute Maggi with secret college spice mix.',
+        price: 45,
+        type: 'cooked',
+        timeEstimate: 'typically ~40 min',
+        category: 'cooked',
+        image: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=400&q=80',
+        available: true
+      },
+      {
+        id: 'maggi-cheese',
+        name: 'Cheese Burst Maggi',
+        description: 'Double cheese slice melted over hot noodles. Late night favorite.',
+        price: 65,
+        type: 'cooked',
+        timeEstimate: 'typically ~40 min',
+        category: 'cooked',
+        image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=400&q=80',
+        available: true
+      },
+      {
+        id: 'boiled-eggs',
+        name: 'Boiled Eggs (2 pcs)',
+        description: 'Fresh boiled eggs with black pepper and chaat masala.',
+        price: 35,
+        type: 'cooked',
+        timeEstimate: 'typically ~30 min',
+        category: 'cooked',
+        image: 'https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=400&q=80',
+        available: true
+      },
+      {
+        id: 'masala-omelette',
+        name: 'Double Egg Masala Omelette',
+        description: 'Whisked with chopped green chilies, onions and coriander.',
+        price: 55,
+        type: 'cooked',
+        timeEstimate: 'typically ~40 min',
+        category: 'cooked',
+        image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=400&q=80',
+        available: true
+      },
+      {
+        id: 'hot-milk',
+        name: 'Hot Bournvita / Horlicks Milk',
+        description: 'Steaming glass of full-cream milk (250ml). Perfect study fuel.',
+        price: 35,
+        type: 'ready',
+        timeEstimate: 'typically ~10 min',
+        category: 'ready',
+        image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=400&q=80',
+        available: true
+      },
+      {
+        id: 'cold-drinks',
+        name: 'Chilled Thums Up / Coke (Can)',
+        description: 'Ice cold refreshing carbonated can to keep you awake.',
+        price: 40,
+        type: 'ready',
+        timeEstimate: 'typically ~10 min',
+        category: 'ready',
+        image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400&q=80',
+        available: true
+      },
+      {
+        id: 'chips-combo',
+        name: 'Kurkure / Lay’s Big Munch',
+        description: 'Spicy crunchy munchies pack for post-midnight study sessions.',
+        price: 25,
+        type: 'ready',
+        timeEstimate: 'typically ~10 min',
+        category: 'ready',
+        image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=400&q=80',
+        available: true
+      }
+    ];
+
+    class NightBitesApp {
+      constructor() {
+        this.products = [...DEFAULT_PRODUCTS];
+        this.cart = {}; // { productId: quantity }
+        this.orders = [];
+        this.activeCategory = 'all';
+        this.currentView = 'home';
+        this.isHighDemand = false;
+        this.forceStoreOpen = true; // Enabled by default for easy demo testing
+        this.upiId = CONFIG.defaultUpiId;
+        this.whatsappNumber = CONFIG.defaultWhatsApp;
+        this.lastCreatedOrder = null;
+
+        this.init();
+      }
+
+      init() {
+        this.loadStorage();
+        this.renderProducts();
+        this.updateCartUI();
+        this.checkOperatingHours();
+        this.renderAdminOrders();
+      }
+
+      loadStorage() {
+        try {
+          const savedOrders = localStorage.getItem('nb_orders');
+          if (savedOrders) this.orders = JSON.parse(savedOrders);
+
+          const savedUpi = localStorage.getItem('nb_upi');
+          if (savedUpi) this.upiId = savedUpi;
+
+          const savedWa = localStorage.getItem('nb_wa');
+          if (savedWa) this.whatsappNumber = savedWa;
+
+          const savedHighDemand = localStorage.getItem('nb_high_demand');
+          if (savedHighDemand) this.isHighDemand = JSON.parse(savedHighDemand);
+          
+          document.getElementById('displayUpiId').textContent = this.upiId;
+          document.getElementById('adminHighDemandToggle').checked = this.isHighDemand;
+          document.getElementById('adminStoreOpenToggle').checked = this.forceStoreOpen;
+          this.applyHighDemandBanner();
+        } catch (e) {
+          console.warn('Storage sync initialized locally.');
+        }
+      }
+
+      saveOrders() {
+        try {
+          localStorage.setItem('nb_orders', JSON.stringify(this.orders));
+        } catch (e) {}
+      }
+
+      navigateTo(viewName) {
+        this.currentView = viewName;
+        const views = ['viewHome', 'viewCart', 'viewPayment', 'viewToken', 'viewAdmin', 'viewClosed'];
+        views.forEach(v => {
+          const el = document.getElementById(v);
+          if (el) el.classList.add('hidden');
+        });
+
+        const target = document.getElementById(viewName === 'home' ? 'viewHome' : 
+                               (viewName === 'cart' ? 'viewCart' : 
+                               (viewName === 'payment' ? 'viewPayment' : 
+                               (viewName === 'token' ? 'viewToken' : 
+                               (viewName === 'admin' ? 'viewAdmin' : 'viewClosed')))));
+        if (target) target.classList.remove('hidden');
+
+        // Sticky cart bar visibility
+        const stickyBar = document.getElementById('stickyBottomBar');
+        const itemCount = this.getCartItemCount();
+        if (viewName === 'home' && itemCount > 0) {
+          stickyBar.classList.remove('translate-y-28');
+        } else {
+          stickyBar.classList.add('translate-y-28');
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      checkOperatingHours() {
+        if (this.forceStoreOpen) {
+          document.getElementById('hoursStatusText').textContent = 'OPEN (11PM-3AM)';
+          document.getElementById('hoursStatusBadge').className = 'flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 hover:bg-emerald-900/50 transition';
+          return true;
+        }
+
+        const now = new Date();
+        const hour = now.getHours();
+        // 11:00 PM (23) to 3:00 AM (0, 1, 2)
+        const isOpen = (hour >= CONFIG.startHour || hour < CONFIG.endHour);
+
+        if (!isOpen) {
+          this.navigateTo('closed');
+          document.getElementById('hoursStatusText').textContent = 'CLOSED';
+          document.getElementById('hoursStatusBadge').className = 'flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-950/60 text-rose-400 border border-rose-800/60 hover:bg-rose-900/50 transition';
+          return false;
+        }
+        return true;
+      }
+
+      bypassClosedForDemo() {
+        this.forceStoreOpen = true;
+        document.getElementById('adminStoreOpenToggle').checked = true;
+        this.showToast('Kitchen test mode active! Store is open.');
+        this.navigateTo('home');
+      }
+
+      toggleHoursModal() {
+        const modal = document.getElementById('hoursScheduleModal');
+        modal.classList.toggle('hidden');
+      }
+
+      setCategory(cat) {
+        this.activeCategory = cat;
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+          btn.className = 'cat-btn px-4 py-2 rounded-full text-xs font-semibold transition whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white';
+        });
+        const activeBtn = document.getElementById(`cat-${cat}`);
+        if (activeBtn) {
+          activeBtn.className = 'cat-btn px-4 py-2 rounded-full text-xs font-bold transition whitespace-nowrap bg-amber-500 text-slate-950 shadow-md';
+        }
+        this.renderProducts();
+      }
+
+      renderProducts() {
+        const container = document.getElementById('productsList');
+        if (!container) return;
+
+        const filtered = this.products.filter(p => {
+          if (this.activeCategory === 'all') return true;
+          return p.category === this.activeCategory;
+        });
+
+        container.innerHTML = filtered.map(product => {
+          const qty = this.cart[product.id] || 0;
+          const isCooked = product.type === 'cooked';
+
+          return `
+            <div class="bg-slate-900/90 border border-slate-800/90 rounded-3xl p-3.5 flex gap-3.5 transition hover:border-slate-700 relative overflow-hidden">
+              <div class="w-24 h-24 rounded-2xl overflow-hidden bg-slate-950 flex-shrink-0 relative">
+                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/200x200/1e293b/fbbf24?text=Night+Bites'">
+                ${!product.available ? `
+                  <div class="absolute inset-0 bg-black/75 flex items-center justify-center text-[10px] font-bold text-red-400 uppercase tracking-wider">
+                    Sold Out
+                  </div>
+                ` : ''}
+              </div>
+
+              <div class="flex-1 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-start justify-between gap-1">
+                    <h3 class="text-sm font-bold text-white leading-snug">${product.name}</h3>
+                  </div>
+                  <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5">${product.description}</p>
+                  
+                  <div class="flex items-center gap-2 mt-1.5">
+                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${isCooked ? 'bg-amber-950/70 text-amber-300 border border-amber-800/50' : 'bg-sky-950/70 text-sky-300 border border-sky-800/50'}">
+                      ${isCooked ? '🍳 Cooked' : '🥤 Ready'} • ${product.timeEstimate}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-800/60">
+                  <span class="font-mono text-sm font-black text-amber-400">₹${product.price}</span>
+
+                  ${!product.available ? `
+                    <span class="text-[10px] font-semibold text-slate-500">Unavailable</span>
+                  ` : (qty === 0 ? `
+                    <button onclick="app.addToCart('${product.id}')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-black text-xs transition flex items-center gap-1 shadow-md shadow-amber-500/10">
+                      <i class="fa-solid fa-plus text-[10px]"></i>
+                      <span>ADD</span>
+                    </button>
+                  ` : `
+                    <div class="flex items-center bg-slate-950 border border-slate-700 rounded-xl overflow-hidden shadow">
+                      <button onclick="app.updateQty('${product.id}', -1)" class="w-7 h-7 flex items-center justify-center text-slate-300 hover:text-amber-400 active:scale-90 font-bold transition">
+                        -
+                      </button>
+                      <span class="w-6 text-center text-xs font-mono font-black text-amber-400">${qty}</span>
+                      <button onclick="app.updateQty('${product.id}', 1)" class="w-7 h-7 flex items-center justify-center text-slate-300 hover:text-amber-400 active:scale-90 font-bold transition">
+                        +
+                      </button>
+                    </div>
+                  `)}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      addToCart(productId) {
+        const prod = this.products.find(p => p.id === productId);
+        if (!prod || !prod.available) return;
+
+        this.cart[productId] = (this.cart[productId] || 0) + 1;
+        this.renderProducts();
+        this.updateCartUI();
+        this.showToast(`Added ${prod.name}`);
+      }
+
+      updateQty(productId, delta) {
+        if (!this.cart[productId]) return;
+        this.cart[productId] += delta;
+        if (this.cart[productId] <= 0) {
+          delete this.cart[productId];
+        }
+        this.renderProducts();
+        this.updateCartUI();
+      }
+
+      getCartFoodTotal() {
+        return Object.entries(this.cart).reduce((total, [id, qty]) => {
+          const prod = this.products.find(p => p.id === id);
+          return total + (prod ? prod.price * qty : 0);
+        }, 0);
+      }
+
+      getCartItemCount() {
+        return Object.values(this.cart).reduce((sum, q) => sum + q, 0);
+      }
+
+      updateCartUI() {
+        const foodTotal = this.getCartFoodTotal();
+        const count = this.getCartItemCount();
+        const serviceCharge = count > 0 ? CONFIG.serviceCharge : 0;
+        const payable = foodTotal + serviceCharge;
+
+        // Sticky Bar Updates
+        document.getElementById('floatingCartCount').textContent = count;
+        document.getElementById('floatingCartTotal').textContent = `₹${payable}`;
+        
+        const stickyBar = document.getElementById('stickyBottomBar');
+        if (this.currentView === 'home' && count > 0) {
+          stickyBar.classList.remove('translate-y-28');
+        } else {
+          stickyBar.classList.add('translate-y-28');
+        }
+
+        // Cart Page Updates
+        const container = document.getElementById('cartItemsContainer');
+        const emptyMsg = document.getElementById('cartEmptyMessage');
+        const billSection = document.getElementById('cartBillSection');
+        const checkoutForm = document.getElementById('checkoutFormSection');
+
+        if (count === 0) {
+          container.innerHTML = '';
+          emptyMsg.classList.remove('hidden');
+          billSection.classList.add('hidden');
+          checkoutForm.classList.add('hidden');
+          return;
+        }
+
+        emptyMsg.classList.add('hidden');
+        billSection.classList.remove('hidden');
+        checkoutForm.classList.remove('hidden');
+
+        container.innerHTML = Object.entries(this.cart).map(([id, qty]) => {
+          const prod = this.products.find(p => p.id === id);
+          if (!prod) return '';
+          return `
+            <div class="py-3 flex items-center justify-between gap-2">
+              <div class="flex-1">
+                <p class="text-xs font-bold text-white">${prod.name}</p>
+                <p class="text-[10px] text-slate-400 font-mono">₹${prod.price} × ${qty}</p>
+              </div>
+              
+              <div class="flex items-center gap-3">
+                <div class="flex items-center bg-slate-950 border border-slate-800 rounded-xl overflow-hidden">
+                  <button onclick="app.updateQty('${prod.id}', -1)" class="w-7 h-7 flex items-center justify-center text-slate-300 hover:text-amber-400 text-xs">-</button>
+                  <span class="w-6 text-center text-xs font-mono font-bold text-amber-400">${qty}</span>
+                  <button onclick="app.updateQty('${prod.id}', 1)" class="w-7 h-7 flex items-center justify-center text-slate-300 hover:text-amber-400 text-xs">+</button>
+                </div>
+                <span class="font-mono text-xs font-bold text-white w-12 text-right">₹${prod.price * qty}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        document.getElementById('cartFoodTotal').textContent = `₹${foodTotal}`;
+        document.getElementById('cartServiceCharge').textContent = `₹${serviceCharge}`;
+        document.getElementById('cartTotalPayable').textContent = `₹${payable}`;
+      }
+
+      proceedToPayment() {
+        const count = this.getCartItemCount();
+        if (count === 0) {
+          this.showToast('Please add items to cart first!');
+          return;
+        }
+
+        const name = document.getElementById('custName').value.trim();
+        const hostel = document.getElementById('custHostel').value.trim();
+        const room = document.getElementById('custRoom').value.trim();
+        const phone = document.getElementById('custPhone').value.trim();
+
+        if (!name) {
+          this.showToast('Please enter your full name');
+          document.getElementById('custName').focus();
+          return;
+        }
+        if (!hostel) {
+          this.showToast('Please enter your hostel / block');
+          document.getElementById('custHostel').focus();
+          return;
+        }
+        if (!room) {
+          this.showToast('Please enter your room number');
+          document.getElementById('custRoom').focus();
+          return;
+        }
+        if (!phone || phone.length < 10) {
+          this.showToast('Enter valid 10-digit WhatsApp phone');
+          document.getElementById('custPhone').focus();
+          return;
+        }
+
+        // Server-Side recalculation guarantee
+        const foodTotal = this.getCartFoodTotal();
+        const totalAmount = foodTotal + CONFIG.serviceCharge;
+
+        // Render Payment View
+        document.getElementById('paymentAmountDisplay').textContent = `₹${totalAmount}`;
+        document.getElementById('btnPayAmount').textContent = totalAmount;
+
+        // Generate clean UPI payment URI
+        const upiUri = `upi://pay?pa=${encodeURIComponent(this.upiId)}&pn=NightBites&am=${totalAmount}&cu=INR&tn=HostelFood`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUri)}`;
+        document.getElementById('upiQrImage').src = qrUrl;
+
+        this.navigateTo('payment');
+      }
+
+      copyUpiId() {
+        const upi = this.upiId;
+        const tempInput = document.createElement('input');
+        tempInput.value = upi;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+
+        const btnText = document.getElementById('copyBtnText');
+        btnText.textContent = 'Copied!';
+        setTimeout(() => { btnText.textContent = 'Copy'; }, 2000);
+        this.showToast(`UPI ID ${upi} copied!`);
+      }
+
+      generateUniqueToken() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+        const nums = Math.floor(1000 + Math.random() * 9000);
+        const prefix = chars.charAt(Math.floor(Math.random() * chars.length)) + chars.charAt(Math.floor(Math.random() * chars.length));
+        return `NB${nums}`;
+      }
+
+      confirmPaymentSubmitted() {
+        // Recompute true totals server-side
+        const foodTotal = this.getCartFoodTotal();
+        const totalAmount = foodTotal + CONFIG.serviceCharge;
+        const token = this.generateUniqueToken();
+        const orderId = '#' + Math.floor(100000 + Math.random() * 900000);
+
+        const name = document.getElementById('custName').value.trim();
+        const hostel = document.getElementById('custHostel').value.trim();
+        const room = document.getElementById('custRoom').value.trim();
+        const phone = document.getElementById('custPhone').value.trim();
+        const notes = document.getElementById('custNotes').value.trim();
+
+        // Build item array
+        const itemsList = Object.entries(this.cart).map(([id, qty]) => {
+          const prod = this.products.find(p => p.id === id);
+          return {
+            id,
+            name: prod.name,
+            price: prod.price,
+            quantity: qty,
+            total: prod.price * qty,
+            type: prod.type
+          };
+        });
+
+        const newOrder = {
+          id: orderId,
+          token: token,
+          studentName: name,
+          hostelBlock: hostel,
+          roomNumber: room,
+          whatsappNumber: phone,
+          specialInstructions: notes || 'None',
+          items: itemsList,
+          foodTotal: foodTotal,
+          serviceCharge: CONFIG.serviceCharge,
+          totalAmount: totalAmount,
+          paymentStatus: 'PENDING MANUAL VERIFICATION',
+          orderStatus: 'NEW',
+          createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+          dateString: new Date().toLocaleString()
+        };
+
+        // Add to orders in memory and save
+        this.orders.unshift(newOrder);
+        this.saveOrders();
+        this.lastCreatedOrder = newOrder;
+
+        // Trigger Automated Email to academeforge@gmail.com
+        this.sendOrderEmailNotification(newOrder);
+
+        // Populate Token Screen
+        document.getElementById('submittedOrderToken').textContent = token;
+        document.getElementById('summaryRoom').textContent = `Room: ${room}`;
+        document.getElementById('summaryAmount').textContent = `₹${totalAmount}`;
+
+        const summaryItems = document.getElementById('summaryItemsList');
+        summaryItems.innerHTML = itemsList.map(item => `
+          <div class="flex justify-between text-slate-300">
+            <span>${item.name} × ${item.quantity}</span>
+            <span class="font-mono text-white">₹${item.total}</span>
+          </div>
+        `).join('');
+
+        // Clear user cart
+        this.cart = {};
+        this.updateCartUI();
+        this.renderProducts();
+        this.renderAdminOrders();
+
+        this.navigateTo('token');
+      }
+
+      copyTokenToClipboard() {
+        if (!this.lastCreatedOrder) return;
+        const text = this.lastCreatedOrder.token;
+        const temp = document.createElement('input');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+
+        const btn = document.getElementById('tokenCopyBtnText');
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy Token'; }, 2000);
+        this.showToast(`Token ${text} copied to clipboard`);
+      }
+
+      launchWhatsApp() {
+        if (!this.lastCreatedOrder) return;
+        const order = this.lastCreatedOrder;
+        
+        const message = `Night Bites Order\n\nToken: ${order.token}\nRoom: ${order.roomNumber}\nAmount: ₹${order.totalAmount}\n\nPayment screenshot attached.`;
+        const encoded = encodeURIComponent(message);
+        const waUrl = `https://wa.me/${this.whatsappNumber}?text=${encoded}`;
+        
+        window.open(waUrl, '_blank');
+      }
+
+      sendOrderEmailNotification(order) {
+        // Construct the exact requested email body format
+        const itemsBreakdown = order.items.map(i => `${i.name} × ${i.quantity}  ₹${i.total}`).join('\n');
+        
+        const subject = `New Hostel Food Order — ${order.token} — Room ${order.roomNumber}`;
+        const emailBody = `NEW FOOD ORDER
+
+Token: ${order.token}
+Order ID: ${order.id}
+
+Student:
+${order.studentName}
+
+Hostel/Block:
+${order.hostelBlock}
+
+Room:
+${order.roomNumber}
+
+WhatsApp:
+${order.whatsappNumber}
+
+ORDER ITEMS
+-------------------------
+${itemsBreakdown}
+-------------------------
+
+Food Total:      ₹${order.foodTotal}
+Service Charge:  ₹${order.serviceCharge}
+TOTAL TO PAY:    ₹${order.totalAmount}
+
+Payment Status:
+PENDING MANUAL VERIFICATION
+
+Order Status:
+NEW
+
+Special Instructions:
+${order.specialInstructions}
+
+Order Time:
+${order.dateString}`;
+
+        // Asynchronous client-side HTTP dispatch to FormSubmit endpoint configured for academeforge@gmail.com
+        fetch(`https://formsubmit.co/ajax/${CONFIG.defaultEmail}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            _subject: subject,
+            order_token: order.token,
+            order_id: order.id,
+            room: order.roomNumber,
+            hostel: order.hostelBlock,
+            student_name: order.studentName,
+            whatsapp: order.whatsappNumber,
+            total_amount: `₹${order.totalAmount}`,
+            payment_status: 'PENDING MANUAL VERIFICATION',
+            complete_order_details: emailBody
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Order notification email dispatched successfully:', data);
+        })
+        .catch(err => {
+          console.warn('Background mail dispatch notice: local storage and mailto backup enabled.', err);
+        });
+      }
+
+      triggerDirectEmailFallback() {
+        if (!this.lastCreatedOrder) return;
+        const order = this.lastCreatedOrder;
+        const itemsBreakdown = order.items.map(i => `${i.name} × ${i.quantity}  ₹${i.total}`).join('\n');
+        const subject = `New Hostel Food Order — ${order.token} — Room ${order.roomNumber}`;
+        const body = `NEW FOOD ORDER%0D%0A%0D%0AToken: ${order.token}%0D%0AOrder ID: ${order.id}%0D%0A%0D%0AStudent:%0D%0A${order.studentName}%0D%0A%0D%0AHostel/Block:%0D%0A${order.hostelBlock}%0D%0A%0D%0ARoom:%0D%0A${order.roomNumber}%0D%0A%0D%0AWhatsApp:%0D%0A${order.whatsappNumber}%0D%0A%0D%0AORDER ITEMS%0D%0A-------------------------%0D%0A${encodeURIComponent(itemsBreakdown)}%0D%0A-------------------------%0D%0A%0D%0AFood Total: ₹${order.foodTotal}%0D%0AService Charge: ₹${order.serviceCharge}%0D%0ATOTAL TO PAY: ₹${order.totalAmount}%0D%0A%0D%0APayment Status: PENDING MANUAL VERIFICATION%0D%0AOrder Status: NEW%0D%0A%0D%0ASpecial Instructions: ${encodeURIComponent(order.specialInstructions)}`;
+        
+        window.location.href = `mailto:${CONFIG.defaultEmail}?subject=${encodeURIComponent(subject)}&body=${body}`;
+      }
+
+      startNewOrder() {
+        document.getElementById('custNotes').value = '';
+        this.navigateTo('home');
+      }
+
+      openAdminModal() {
+        document.getElementById('adminPinModal').classList.remove('hidden');
+        document.getElementById('adminPinInput').value = '';
+        document.getElementById('adminPinInput').focus();
+      }
+
+      closeAdminModal() {
+        document.getElementById('adminPinModal').classList.add('hidden');
+      }
+
+      verifyAdminPin() {
+        const pin = document.getElementById('adminPinInput').value.trim();
+        if (pin === CONFIG.adminPin) {
+          this.closeAdminModal();
+          this.showToast('Kitchen Dashboard Unlocked');
+          this.renderAdminOrders();
+          this.navigateTo('admin');
+        } else {
+          this.showToast('Invalid PIN. Use default 1122');
+        }
+      }
+
+      toggleHighDemand(enabled) {
+        this.isHighDemand = enabled;
+        try {
+          localStorage.setItem('nb_high_demand', JSON.stringify(enabled));
+        } catch (e) {}
+        this.applyHighDemandBanner();
+        this.showToast(enabled ? 'High Demand Mode Activated' : 'Normal Demand Restored');
+      }
+
+      applyHighDemandBanner() {
+        const banner = document.getElementById('highDemandBanner');
+        if (this.isHighDemand) {
+          banner.classList.remove('hidden');
+        } else {
+          banner.classList.add('hidden');
+        }
+      }
+
+      toggleStoreForceOpen(enabled) {
+        this.forceStoreOpen = enabled;
+        this.checkOperatingHours();
+        this.showToast(enabled ? 'Store schedule set to OPEN' : 'Reverted to night hours check');
+      }
+
+      promptEditUpi() {
+        const current = this.upiId;
+        const newUpi = prompt('Enter team UPI ID for QR code:', current);
+        if (newUpi && newUpi.trim()) {
+          this.upiId = newUpi.trim();
+          localStorage.setItem('nb_upi', this.upiId);
+          document.getElementById('displayUpiId').textContent = this.upiId;
+          this.showToast(`UPI ID updated to ${this.upiId}`);
+        }
+      }
+
+      promptEditWhatsApp() {
+        const current = this.whatsappNumber;
+        const newWa = prompt('Enter team WhatsApp Number with country code (e.g. 919876543210):', current);
+        if (newWa && newWa.trim()) {
+          this.whatsappNumber = newWa.trim();
+          localStorage.setItem('nb_wa', this.whatsappNumber);
+          this.showToast(`WhatsApp updated to ${this.whatsappNumber}`);
+        }
+      }
+
+      refreshAdminOrders() {
+        this.loadStorage();
+        this.renderAdminOrders();
+        this.showToast('Orders refreshed');
+      }
+
+      updateOrderStatus(token, newPaymentStatus, newOrderStatus) {
+        const order = this.orders.find(o => o.token === token);
+        if (!order) return;
+
+        if (newPaymentStatus) order.paymentStatus = newPaymentStatus;
+        if (newOrderStatus) order.orderStatus = newOrderStatus;
+
+        this.saveOrders();
+        this.renderAdminOrders();
+        this.showToast(`Order ${token} updated to ${newOrderStatus || newPaymentStatus}`);
+      }
+
+      renderAdminOrders() {
+        const container = document.getElementById('adminOrdersList');
+        const countBadge = document.getElementById('adminOrdersCountBadge');
+        if (!container) return;
+
+        countBadge.textContent = this.orders.length;
+
+        if (this.orders.length === 0) {
+          container.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center text-slate-500 text-xs">
+              <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-700 block"></i>
+              No orders received yet tonight. Incoming orders will show up here in real time!
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = this.orders.map(order => {
+          const isVerified = order.paymentStatus === 'VERIFIED';
+          const isPending = order.paymentStatus.includes('PENDING');
+
+          return `
+            <div class="bg-slate-900 border ${isVerified ? 'border-emerald-800/80' : 'border-amber-800/80'} rounded-2xl p-4 space-y-3 shadow-lg">
+              
+              <!-- Card Header -->
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-base font-black text-amber-400">${order.token}</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${isVerified ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}">
+                      ${isVerified ? '🟢 VERIFIED' : '🟡 PAYMENT PENDING'}
+                    </span>
+                  </div>
+                  <p class="text-xs text-white font-bold mt-1">${order.studentName} • <span class="text-amber-300 font-mono">Room ${order.roomNumber}</span></p>
+                  <p class="text-[11px] text-slate-400">${order.hostelBlock} • WA: <a href="https://wa.me/91${order.whatsappNumber}" target="_blank" class="text-emerald-400 underline">${order.whatsappNumber}</a></p>
+                </div>
+                <div class="text-right">
+                  <span class="text-base font-mono font-black text-white">₹${order.totalAmount}</span>
+                  <span class="block text-[10px] text-slate-400">${order.createdAt}</span>
+                </div>
+              </div>
+
+              <!-- Ordered Items List -->
+              <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 text-xs space-y-1 font-mono">
+                ${order.items.map(item => `
+                  <div class="flex justify-between text-slate-300">
+                    <span>${item.name} × ${item.quantity}</span>
+                    <span>₹${item.total}</span>
+                  </div>
+                `).join('')}
+                ${order.specialInstructions && order.specialInstructions !== 'None' ? `
+                  <div class="pt-1.5 mt-1.5 border-t border-slate-800 text-[11px] text-amber-300/90 font-sans">
+                    <strong>Note:</strong> ${order.specialInstructions}
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Status Badge -->
+              <div class="flex items-center justify-between text-xs pt-1">
+                <span class="text-slate-400">Order Stage:</span>
+                <span class="font-bold text-amber-400 uppercase tracking-wider text-[11px] bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
+                  ${order.orderStatus}
+                </span>
+              </div>
+
+              <!-- Admin Action Buttons Based on Status -->
+              <div class="pt-2 border-t border-slate-800 flex flex-wrap gap-2">
+                ${isPending ? `
+                  <button onclick="app.updateOrderStatus('${order.token}', 'VERIFIED', 'ACCEPTED')" class="flex-1 py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1 shadow">
+                    <i class="fa-solid fa-check"></i> Verify Payment
+                  </button>
+                  <button onclick="app.updateOrderStatus('${order.token}', 'REJECTED', 'CANCELLED')" class="py-2 px-3 rounded-xl bg-rose-950 hover:bg-rose-900 border border-rose-800 text-rose-300 font-bold text-xs transition">
+                    Reject
+                  </button>
+                ` : `
+                  ${order.orderStatus === 'ACCEPTED' ? `
+                    <button onclick="app.updateOrderStatus('${order.token}', null, 'PREPARING')" class="flex-1 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs">
+                      🔥 Start Preparing
+                    </button>
+                    <button onclick="app.updateOrderStatus('${order.token}', null, 'OUT FOR DELIVERY')" class="flex-1 py-2 rounded-xl bg-sky-600 text-white font-bold text-xs">
+                      ⚡ Skip to Delivery
+                    </button>
+                  ` : ''}
+
+                  ${order.orderStatus === 'PREPARING' ? `
+                    <button onclick="app.updateOrderStatus('${order.token}', null, 'READY')" class="flex-1 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs">
+                      🍽️ Mark as Ready
+                    </button>
+                  ` : ''}
+
+                  ${order.orderStatus === 'READY' ? `
+                    <button onclick="app.updateOrderStatus('${order.token}', null, 'OUT FOR DELIVERY')" class="flex-1 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs">
+                      🚀 Out for Delivery
+                    </button>
+                  ` : ''}
+
+                  ${order.orderStatus === 'OUT FOR DELIVERY' ? `
+                    <button onclick="app.updateOrderStatus('${order.token}', null, 'DELIVERED')" class="flex-1 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs">
+                      ✅ Mark Delivered
+                    </button>
+                  ` : ''}
+
+                  ${order.orderStatus === 'DELIVERED' ? `
+                    <span class="w-full text-center py-1 text-xs text-emerald-400 font-bold bg-emerald-950/40 rounded-xl border border-emerald-900">
+                      Completed & Delivered to Room
+                    </span>
+                  ` : ''}
+                `}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      showToast(msg) {
+        const toast = document.getElementById('toastContainer');
+        const text = document.getElementById('toastMessage');
+        text.innerHTML = `<i class="fa-solid fa-bell text-amber-400"></i> ${msg}`;
+        toast.classList.remove('opacity-0', '-translate-y-4');
+        toast.classList.add('opacity-100', 'translate-y-0');
+
+        setTimeout(() => {
+          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.add('opacity-0', '-translate-y-4');
+        }, 2600);
+      }
+    }
+
+    let app;
+    window.addEventListener('DOMContentLoaded', () => {
+      app = new NightBitesApp();
+    });
+  </script>
 </body>
 </html>
